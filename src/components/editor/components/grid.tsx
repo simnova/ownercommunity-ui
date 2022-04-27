@@ -1,7 +1,6 @@
 import {useNode, Element } from "@craftjs/core";
 import { Row, Col, Input, Form, Select } from 'antd';
 import { Container } from "../page/container";
-import { TextThing } from './text-thing';
 
 const { Option } = Select;
 interface GridProp {
@@ -26,7 +25,7 @@ Grid = ({ numOfCols, bgColor, ...props }: GridProp) => {
                 <Element 
                   id={`col-${i+1}`} 
                   is={Container}
-                  canvas 
+                  canvas          
                 >
                 </Element>
               </Col>
