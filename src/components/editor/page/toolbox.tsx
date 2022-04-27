@@ -7,7 +7,6 @@ import { Breadcrumbs } from "../components/breadcrumbs";
 import { MenuComponent } from "../components/menu-component";
 import { Grid } from "../components/grid";
 import { Card } from "../components/card";
-import { Container } from "./container";
 import { TextComponent } from "../components/text-component";
 
 export const Toolbox: React.FC<any> = (props) => {
@@ -42,13 +41,6 @@ export const Toolbox: React.FC<any> = (props) => {
           style={{width: "98%"}}  
         >
           Grid
-        </Button>
-        <Button ref={(ref) =>
-            connectors.create(ref as HTMLElement, <Container />)
-          }
-          style={{width: "98%"}}
-        >
-          Container
         </Button>
       </div>
 
