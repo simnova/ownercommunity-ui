@@ -2725,6 +2725,18 @@ export type MemberPhotoUploadContainerMemberFieldsFragment = {
   profile?: { __typename?: 'MemberProfile'; avatarDocumentId?: string | null } | null;
 };
 
+export type MemberSiteCurrentMemberHasAdminRoleQueryVariables = Exact<{
+  communityId: Scalars['ObjectID'];
+}>;
+
+export type MemberSiteCurrentMemberHasAdminRoleQuery = {
+  __typename?: 'Query';
+  memberForCurrentUser?: {
+    __typename?: 'Member';
+    role?: { __typename?: 'Role'; roleName: string } | null;
+  } | null;
+};
+
 export type AdminCommunitiesDropdownContainerCommunityQueryVariables = Exact<{
   id: Scalars['ID'];
 }>;
@@ -6942,6 +6954,58 @@ export const MemberPhotoUploadContainerContainerMemberDocument = {
 } as unknown as DocumentNode<
   MemberPhotoUploadContainerContainerMemberQuery,
   MemberPhotoUploadContainerContainerMemberQueryVariables
+>;
+export const MemberSiteCurrentMemberHasAdminRoleDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'MemberSiteCurrentMemberHasAdminRole' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'communityId' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ObjectID' } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'memberForCurrentUser' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'communityId' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'communityId' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'role' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'roleName' } }]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<
+  MemberSiteCurrentMemberHasAdminRoleQuery,
+  MemberSiteCurrentMemberHasAdminRoleQueryVariables
 >;
 export const AdminCommunitiesDropdownContainerCommunityDocument = {
   kind: 'Document',
