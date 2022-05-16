@@ -7,9 +7,14 @@ const GET_PROPERTIES_BY_COMMUNITY = gql`
         propertiesByCommunityId(communityId: $communityId) {
             propertyName
             propertyType
-            location
+            location {
+                address {
+                    streetNumber
+                    streetName
+                }
+            }
             owner {
-                name
+                memberName
             }
         }
     }
@@ -37,13 +42,15 @@ PropertiesListing = () => {
                 className="px-4 py-2"
                 ref={ref => connect(drag(ref as HTMLDivElement))} 
             >
-                {data && data.propertiesByCommunityId && data.propertiesByCommunityId.map((property: any) => (
-                <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-                    <h2>{property.propertyName}</h2>
-                    <p>{property.propertyType}</p>
-                    <p>{property.location}</p>
-                    <p>{property.owner.name}</p>
-                </div>))}
+                <div className="bg-white" style={{display:'flex', justifyContent: 'center' }}>
+                    {data && data.propertiesByCommunityId && data.propertiesByCommunityId.map((property: any) => (
+                    <div className="bg-white shadow overflow-hidden sm:rounded-lg" style={{ margin: '0% 2.5%'}}>
+                        <h2>Name: {property.propertyName}</h2>
+                        <p>Type: {property.propertyType}</p>
+                        {property.location && <p>Location: {property.location.address.streetNumber} {property.location.address.streetName}</p>}
+                        <p>Owner: {property.owner.memberName}</p>
+                    </div>))}
+                </div>
             </div>
         )
     }
