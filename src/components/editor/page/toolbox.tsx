@@ -3,6 +3,7 @@ import { Button } from 'antd';
 import { useEditor } from '@craftjs/core';
 
 import * as CmsComponents from "../components/";
+import { useParams } from 'react-router-dom';
 
 interface EditorConfigDefinition {
   categories: {
@@ -16,6 +17,7 @@ interface EditorConfigDefinition {
 
 export const Toolbox: React.FC<any> = (props) => {
   const { connectors, query } = useEditor();
+  const params = useParams();
 
   const editorConfig:EditorConfigDefinition = {
     categories: [
@@ -71,7 +73,7 @@ export const Toolbox: React.FC<any> = (props) => {
           },
           {
             name: 'Properties Listing',
-            component: <CmsComponents.PropertiesListing />
+            component: <CmsComponents.PropertiesListing data={{ communityId: localStorage.getItem('community')}} />
           }
         ]
       }
