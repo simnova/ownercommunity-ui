@@ -69,6 +69,10 @@ export const Toolbox: React.FC<any> = (props) => {
             name: 'Card',
             component: <CmsComponents.Card background="#ff00ff" />
           },
+          {
+            name: 'Properties Listing',
+            component: <CmsComponents.PropertiesListing />
+          }
         ]
       }
     ]
