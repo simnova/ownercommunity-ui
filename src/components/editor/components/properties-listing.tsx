@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { gql, useQuery } from '@apollo/client';
 import { useNode } from '@craftjs/core';
-import { Typography, Card, Space, Badge } from 'antd';
+import { Typography, Card, Space, Badge, Skeleton } from 'antd';
 
 const { Text, Title } = Typography;
 
@@ -51,36 +51,39 @@ PropertiesListing = (props: PropertiesListingProps) => {
         return (
             <Card title={<Title level={4}>{property.propertyName}</Title>} size='small' style={{ margin: '15px 0', padding: "5px 25px"}} extra={<Link to='listing/details' style={{marginLeft: '30px'}}>Details</Link>}>
                 <Space direction='vertical' size='small'>
-                    {property.owner && <Text italic>Owner - {property.owner.memberName}</Text>}
-                    {property.propertyType && <Text>Property Type - {property.propertyType}</Text>}
+                    {property.owner && <Text italic>Owner: {property.owner.memberName}</Text>}
+                    {property.propertyType && <Text>Property Type: {property.propertyType}</Text>}
                 </Space>
             </Card>
         )
     }
 
     const content = () => {
-        if (loading) return <p>Loading...</p>;
+        if (loading) return <Skeleton active/>;
         if (error) return <p>Error! ${error.message}</p>;
         return (
             <div 
                 className="px-4 py-2"
                 ref={ref => connect(drag(ref as HTMLDivElement))} 
             >
-                <div className="bg-white shadow overflow-hidden sm:rounded" style={{display:'flex', justifyContent: 'space-around', }}>
+                <div className="bg-white shadow overflow-hidden sm:rounded" style={{display:'flex', justifyContent: 'space-around', flexWrap: 'wrap'}}>
                     {data && data.propertiesByCommunityId && data.propertiesByCommunityId.map((property: any) => (
-                        property.listedForSale ?
-                        <Badge.Ribbon text='For Sale' color='green'>
-                            {generatePropertyCard(property)}
-                        </Badge.Ribbon> :
-                        property.listedForRent ?
-                        <Badge.Ribbon text='For Rent' color='blue'>
-                            {generatePropertyCard(property)}
-                        </Badge.Ribbon> :
-                        property.listedForLease ?
-                        <Badge.Ribbon text='For Lease' color='purple'>
-                            {generatePropertyCard(property)}
-                        </Badge.Ribbon> :
-                        generatePropertyCard(property)
+                        <>
+                            {property.listedForSale ?
+                            <Badge.Ribbon text='For Sale' color='green'>
+                                {generatePropertyCard(property)}
+                            </Badge.Ribbon> :
+                            property.listedForRent ?
+                            <Badge.Ribbon text='For Rent' color='blue'>
+                                {generatePropertyCard(property)}
+                            </Badge.Ribbon> :
+                            property.listedForLease ?
+                            <Badge.Ribbon text='For Lease' color='purple'>
+                                {generatePropertyCard(property)}
+                            </Badge.Ribbon> :
+                            property.listedInDirectory ?
+                            generatePropertyCard(property) : <></>}
+                        </>
                     ))}
                 </div>
             </div>
