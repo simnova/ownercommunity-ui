@@ -68,8 +68,16 @@ PropertiesListing = (props: PropertiesListingProps) => {
             >
                 <div className="bg-white shadow overflow-hidden sm:rounded" style={{display:'flex', justifyContent: 'space-around', }}>
                     {data && data.propertiesByCommunityId && data.propertiesByCommunityId.map((property: any) => (
-                      property.listedForSale ?
+                        property.listedForSale ?
                         <Badge.Ribbon text='For Sale' color='green'>
+                            {generatePropertyCard(property)}
+                        </Badge.Ribbon> :
+                        property.listedForRent ?
+                        <Badge.Ribbon text='For Rent' color='blue'>
+                            {generatePropertyCard(property)}
+                        </Badge.Ribbon> :
+                        property.listedForLease ?
+                        <Badge.Ribbon text='For Lease' color='purple'>
                             {generatePropertyCard(property)}
                         </Badge.Ribbon> :
                         generatePropertyCard(property)
