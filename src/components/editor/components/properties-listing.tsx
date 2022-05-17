@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { gql, useQuery } from '@apollo/client';
 import { useNode } from '@craftjs/core';
-import { Typography, Card, Space } from 'antd';
+import { Typography, Card, Space, Badge } from 'antd';
 
 const { Text, Title } = Typography;
 
@@ -47,6 +47,17 @@ PropertiesListing = (props: PropertiesListingProps) => {
         },
     });
 
+    const generatePropertyCard = (property: any) => {
+        return (
+            <Card title={<Title level={4}>{property.propertyName}</Title>} size='small' style={{ margin: '15px 0', padding: "5px 25px"}} extra={<Link to='listing/details' style={{marginLeft: '30px'}}>Details</Link>}>
+                <Space direction='vertical' size='small'>
+                    {property.owner && <Text italic>Owner - {property.owner.memberName}</Text>}
+                    {property.propertyType && <Text>Property Type - {property.propertyType}</Text>}
+                </Space>
+            </Card>
+        )
+    }
+
     const content = () => {
         if (loading) return <p>Loading...</p>;
         if (error) return <p>Error! ${error.message}</p>;
@@ -57,12 +68,11 @@ PropertiesListing = (props: PropertiesListingProps) => {
             >
                 <div className="bg-white shadow overflow-hidden sm:rounded" style={{display:'flex', justifyContent: 'space-around', }}>
                     {data && data.propertiesByCommunityId && data.propertiesByCommunityId.map((property: any) => (
-                        <Card title={<Title level={4}>{property.propertyName}</Title>} size='small' style={{ margin: '15px 0'}} extra={<Link to='/:id'></Link>}>
-                            <Space direction='vertical' size='small'>
-                                {property.owner && <Text italic>Owner - {property.owner.memberName}</Text>}
-                                {property.propertyType && <Text>Property Type - {property.propertyType}</Text>}
-                            </Space>
-                        </Card>
+                      property.listedForSale ?
+                        <Badge.Ribbon text='For Sale' color='green'>
+                            {generatePropertyCard(property)}
+                        </Badge.Ribbon> :
+                        generatePropertyCard(property)
                     ))}
                 </div>
             </div>
