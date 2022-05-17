@@ -49,7 +49,7 @@ PropertiesListing = (props: PropertiesListingProps) => {
 
     const generatePropertyCard = (property: any) => {
         return (
-            <Card title={<Title level={4}>{property.propertyName}</Title>} size='small' style={{ margin: '15px 0', padding: "5px 25px"}} extra={<Link to='listing/details' style={{marginLeft: '30px'}}>Details</Link>}>
+            <Card title={<Title level={4}>{property.propertyName}</Title>} size='small' style={{ margin: '15px 0', padding: "5px 25px"}} extra={<Link to='listing/:propertyId' style={{marginLeft: '30px'}}>Details</Link>}>
                 <Space direction='vertical' size='small'>
                     {property.owner && <Text italic>Owner: {property.owner.memberName}</Text>}
                     {property.propertyType && <Text>Property Type: {property.propertyType}</Text>}
