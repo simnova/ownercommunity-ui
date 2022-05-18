@@ -103,8 +103,9 @@ const SiteEditorPageTree: React.FC = (props) => {
   }
 
   const canDrop = ({ node, nextParent, prevPath, nextPath }:any) => {
-    // ensure only one root node
-    if (nextPath.length === 1) { 
+    console.log("NEXT PARENT ", nextParent);
+    // ensure only one root node or if targeted node is a listing page
+    if (nextPath.length === 1 || nextParent.type === 'Listing') { 
       return false;
     }
 
@@ -115,8 +116,10 @@ const SiteEditorPageTree: React.FC = (props) => {
     <Modal title="Add Page" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
       <PageDetails
         data={newNode}
-        saveData={function (data: { id: string; title: string; pageName: string; }): void {
+        saveData={function (data: { id: string; title: string; pageName: string; pageType: string; }): void {
+          console.log(data)
           newNode.title = data.title;
+          newNode.type = data.pageType;
           newNode.pageName = data.pageName;
           console.log('saveData',data,newNode);
           var updatedTree = addNodeUnderParent({
