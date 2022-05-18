@@ -3,6 +3,7 @@ import SortableTree, {getFlatDataFromTree, getTreeFromFlatData, getNodeAtPath, c
 import '@nosferatu500/react-sortable-tree/style.css'; // This only needs to be imported once in your app
 import {usePageLayouts} from "../../../editor/local-data";
 import { Modal, Button ,Row, Col, Collapse,Typography } from 'antd';
+import { useEditor } from '@craftjs/core';
 
 import { PageDetails, PageDetailsPropTypes } from "../../../editor/tree/page-details";
 import uniqid from 'uniqid';
@@ -105,7 +106,7 @@ const SiteEditorPageTree: React.FC = (props) => {
   const canDrop = ({ node, nextParent, prevPath, nextPath }:any) => {
     console.log("NEXT PARENT ", nextParent);
     // ensure only one root node or if targeted node is a listing page
-    if (nextPath.length === 1 || nextParent.type === 'Listing') { 
+    if (nextPath.length === 1 || nextParent.pageType === 'Listing') { 
       return false;
     }
 
@@ -117,9 +118,8 @@ const SiteEditorPageTree: React.FC = (props) => {
       <PageDetails
         data={newNode}
         saveData={function (data: { id: string; title: string; pageName: string; pageType: string; }): void {
-          console.log(data)
           newNode.title = data.title;
-          newNode.type = data.pageType;
+          newNode.pageType = data.pageType;
           newNode.pageName = data.pageName;
           console.log('saveData',data,newNode);
           var updatedTree = addNodeUnderParent({
@@ -160,7 +160,33 @@ const SiteEditorPageTree: React.FC = (props) => {
             treeData={treeData}
             onChange={setTreeData}
             canDrop={canDrop}
+            canNodeHaveChildren={(node: any) => node.pageType !== 'Listing'}
             generateNodeProps={({node, path}) => {
+              let buttons = [
+                <Button onClick={() => {
+                  setNewNode({parent: node.id, pageName: "New Page"});
+                  showModal(node);
+                }}>
+                  Add Child
+                </Button>,
+                <Button onClick={() =>{
+                  var newTreeData = removeNodeAtPath({
+                    treeData: treeData,
+                    path: path,
+                    getNodeKey: keyFromTreeIndex,
+                  });
+                // onClickPage(null,null);
+                  setTreeData(newTreeData);
+                  
+                }}>
+                  Remove
+                </Button>
+              ];
+              if (node.pageType === 'Listing') {
+                buttons.shift();
+              }
+              console.log("node ", node);
+              console.log("buttons ", buttons);
               return {
                 onClick: () => {
                   onClickPage(node,path);
@@ -170,26 +196,7 @@ const SiteEditorPageTree: React.FC = (props) => {
                   borderWidth: node.id === selectedNode?.id ? '2px' : '1px',
                   borderStyle: 'solid',
                 },
-                buttons: [
-                  <Button onClick={() => {
-                    setNewNode({parent: node.id, pageName: "New Page"});
-                    showModal(node);
-                  }}>
-                    Add Child
-                  </Button>,
-                  <Button onClick={() =>{
-                    var newTreeData = removeNodeAtPath({
-                      treeData: treeData,
-                      path: path,
-                      getNodeKey: keyFromTreeIndex,
-                    });
-                  // onClickPage(null,null);
-                    setTreeData(newTreeData);
-                    
-                  }}>
-                    Remove
-                  </Button>
-                ]
+                buttons: buttons,
               }
             }}  
           />
@@ -202,9 +209,10 @@ const SiteEditorPageTree: React.FC = (props) => {
                 <hr/>
                 <PageDetails
                   data={selectedNode}
-                  saveData={function (data: { id: string; title: string; pageName: string; }): void {
+                  saveData={function (data: { id: string; title: string; pageName: string; pageType: string;}): void {
                     var node = getNodeAtPath({treeData: treeData, path: selectedNodePath, getNodeKey: keyFromTreeIndex})?.node as any;
                     node.title = data.title;
+                    node.pageType = data.pageType;
                     node.pageName = data.pageName;
                     var updatedTree = changeNodeAtPath({treeData: treeData, path: selectedNodePath, newNode: node, getNodeKey: keyFromTreeIndex});
                     setTreeData(updatedTree);

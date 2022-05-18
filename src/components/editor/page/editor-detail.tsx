@@ -62,7 +62,7 @@ export const EditorDetail = (props:any) => {
               pageLayout =  JSON.parse(JSON.stringify(pageLayouts.find((item: any) => item.id === value)?.layout)) ?? undefined;
               // console.log(pageLayout);
               parsedJson = JSON.stringify(pageLayout);
-            }
+            } else if (node && node.pageType === 'Listing')
             // console.log(pageLayout);
             console.log(parsedJson);
             setSelectedPage(value);
