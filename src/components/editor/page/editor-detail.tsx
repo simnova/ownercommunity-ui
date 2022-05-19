@@ -12,6 +12,7 @@ import {
   DesktopOutlined
 } from '@ant-design/icons';
 import { TextThing } from '../components/text-thing';
+import { PropertiesListing } from '../components/properties-listing';
 
 const { TextArea } = Input;
 const { TreeNode } = TreeSelect;
@@ -21,11 +22,12 @@ const { TreeNode } = TreeSelect;
 
 export const EditorDetail = (props:any) => {
   const [selectedPage, setSelectedPage] = useState<string|undefined>();
+  const [selectedPageIsListing, setSelectedPageIsListing] = useState<boolean>(false);
   const [editorJson, setEditorJson] = useState<string | SerializedNodes | undefined>(undefined);
   const [json, setJson] = useState("");
   const [mobileView, setMobileView] = useState(false);
   const [pageLayouts, setPageLayouts] = usePageLayouts();
-  const { query } = useEditor();
+  const { query, actions } = useEditor();
 
   const save = () => {
     const json = query.serialize();
@@ -62,7 +64,9 @@ export const EditorDetail = (props:any) => {
               pageLayout =  JSON.parse(JSON.stringify(pageLayouts.find((item: any) => item.id === value)?.layout)) ?? undefined;
               // console.log(pageLayout);
               parsedJson = JSON.stringify(pageLayout);
-            } else if (node && node.pageType === 'Listing')
+            }
+            
+            setSelectedPageIsListing(node?.pageType === 'Listing')
             // console.log(pageLayout);
             console.log(parsedJson);
             setSelectedPage(value);
@@ -85,7 +89,13 @@ export const EditorDetail = (props:any) => {
                   <Element is={Container} canvas>
                   </Element>
                 </Frame>
-                : 
+                : selectedPageIsListing ?
+                <Frame data={editorJson} >
+                  <Element is={Container} canvas>
+                    <PropertiesListing />
+                  </Element>
+                </Frame>
+                :
                 <div>
                   <div>No JSON</div>
                   <Frame data={editorJson} >

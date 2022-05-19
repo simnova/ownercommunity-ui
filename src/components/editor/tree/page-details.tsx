@@ -10,6 +10,7 @@ const ComponentPropTypes = {
     id: PropTypes.string,
     title: PropTypes.string,
     pageName: PropTypes.string,
+    pageType: PropTypes.string,
     invalidPageNames: PropTypes.arrayOf(PropTypes.string),
   }),
   saveData: PropTypes.func.isRequired,
@@ -42,6 +43,7 @@ export const PageDetails: React.FC<PageDetailsPropTypes> = (props) => {
     form.setFieldsValue({
       title: props.data.title,
       pageName: props.data.pageName,
+      pageType: props.data.pageType,
     });
   }, [props.data]);
 
@@ -62,6 +64,7 @@ export const PageDetails: React.FC<PageDetailsPropTypes> = (props) => {
         initialValues={{
           title: props.data.title,
           pageName: props.data.pageName,
+          pageType: props.data.pageType,
         }}
         onFinish={(values) => {
           props.saveData(values);
@@ -80,7 +83,7 @@ export const PageDetails: React.FC<PageDetailsPropTypes> = (props) => {
         name="pageType"
         label="Page Type"
       >
-        <Select defaultValue="Blank">
+        <Select>
           <Option value="Blank">Blank</Option>
           <Option value="Listing">Listing</Option>
         </Select>

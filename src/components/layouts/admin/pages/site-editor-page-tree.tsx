@@ -104,7 +104,6 @@ const SiteEditorPageTree: React.FC = (props) => {
   }
 
   const canDrop = ({ node, nextParent, prevPath, nextPath }:any) => {
-    console.log("NEXT PARENT ", nextParent);
     // ensure only one root node or if targeted node is a listing page
     if (nextPath.length === 1 || nextParent.pageType === 'Listing') { 
       return false;
@@ -119,7 +118,7 @@ const SiteEditorPageTree: React.FC = (props) => {
         data={newNode}
         saveData={function (data: { id: string; title: string; pageName: string; pageType: string; }): void {
           newNode.title = data.title;
-          newNode.pageType = data.pageType;
+          newNode.pageType = data.pageType ?? 'Blank';
           newNode.pageName = data.pageName;
           console.log('saveData',data,newNode);
           var updatedTree = addNodeUnderParent({
@@ -185,8 +184,6 @@ const SiteEditorPageTree: React.FC = (props) => {
               if (node.pageType === 'Listing') {
                 buttons.shift();
               }
-              console.log("node ", node);
-              console.log("buttons ", buttons);
               return {
                 onClick: () => {
                   onClickPage(node,path);
