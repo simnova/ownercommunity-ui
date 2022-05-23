@@ -120,7 +120,8 @@ const SiteEditorPageTree: React.FC = (props) => {
     const newNode = {
       title: 'Details Page',
       pageType: 'Details',
-      pageName: 'details'
+      pageName: 'details',
+      id: uniqid(),
     }
     return addNodeUnderParent({
       treeData: treeData,
