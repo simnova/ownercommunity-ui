@@ -205,9 +205,10 @@ const SiteEditorPageTree: React.FC = (props) => {
                   Remove
                 </Button>
               ];
-              if (node.pageType === 'Listing' || node.pageType === 'Details') {
+              if (node.pageType === 'Listing') {
                 buttons.shift();
               }
+
               return {
                 onClick: () => {
                   onClickPage(node,path);
@@ -217,7 +218,7 @@ const SiteEditorPageTree: React.FC = (props) => {
                   borderWidth: node.id === selectedNode?.id ? '2px' : '1px',
                   borderStyle: 'solid',
                 },
-                buttons: buttons,
+                buttons: node.pageType === 'Details' ? [<></>] : buttons,
               }
             }}  
           />
