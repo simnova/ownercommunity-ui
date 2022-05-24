@@ -84,7 +84,8 @@ const SiteEditorPageTree: React.FC = (props) => {
   const updatePathOnChildren = (node:any, currentPath:string) => {
     if(node.children) {
       node.children.forEach((child:any) => {
-        var childPath = currentPath + "/" + child.pageName;
+        var childPath = currentPath + "/";
+        child.pageType === 'Details' ? childPath += ":propertyId/*" : childPath += child.pageName;
         child.path = childPath;
         updatePathOnChildren(child,childPath);
       });

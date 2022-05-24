@@ -1,55 +1,14 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { gql, useQuery } from '@apollo/client';
 import { useNode } from '@craftjs/core';
+import { MemberPropertyByPropertyIdDocument } from '../../../generated';
 import { Typography, Card, Space, Badge, Skeleton } from 'antd';
-
-const { Text, Title } = Typography;
-
-const GET_PROPERTY_BY_ID = gql`
-    query PropertyById($propertyId: ObjectID!) {
-        property(id: $propertyId) {
-            propertyName
-            listingDetail {
-              price
-            }
-        }
-    }
-`;
-
-// rentHigh
-// rentLow
-// lease
-// maxGuests
-// bedrooms
-// bedroomDetails
-// bathrooms
-// squareFeet
-// description
-// amenities
-// additionalAmenities
-// images
-// video
-// floorPlan
-// floorPlanImages
-// listingAgent
-// listingAgentPhone
-// listingAgentEmail
-// listingAgentWebsite
-// listingAgentCompany
-// listingAgentCompanyPhone
-// listingAgentCompanyEmail
-// listingAgentCompanyWebsite
-// listingAgentCompanyAddress
-
-// interface PropertyDetailsProps {
-//     path: string;
-// }
 
 let PropertyDetails: any;
 
 PropertyDetails = () => {
-    const { state } = useLocation();
-    console.log("STATE ", state);
+    const params = useParams();
+    const propertyId = params['*']?.slice(params['*'].lastIndexOf('/') + 1);
 
     const { connectors: { connect, drag }, selected } = useNode((state) =>(
         {
@@ -57,11 +16,10 @@ PropertyDetails = () => {
         }
     ));
 
-    const { loading, error, data } = useQuery(GET_PROPERTY_BY_ID, {
-        variables: { 
-            propertyId: '625641f65f0e5d47213504f0'
-        },
-    });
+    const { loading, error, data } = useQuery(MemberPropertyByPropertyIdDocument, {
+      variables: { propertyId: propertyId}
+    }
+    );
 
     const content = () => {
         if (loading) return <Skeleton active/>;
