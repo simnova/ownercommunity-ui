@@ -62,6 +62,10 @@ export const Toolbox: React.FC<any> = (props) => {
             name: 'Image',
             component: <CmsComponents.ImageComponent />
           },
+          {
+            name: 'Image Carousel',
+            component: <CmsComponents.CarouselComponent images={[]} />
+          }
         ]
       },
       {

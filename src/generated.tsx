@@ -1142,6 +1142,24 @@ export type UserUpdateInput = {
   lastName?: InputMaybe<Scalars['String']>;
 };
 
+export type GetImagesInCommunityQueryVariables = Exact<{
+  communityId: Scalars['ID'];
+}>;
+
+export type GetImagesInCommunityQuery = {
+  __typename?: 'Query';
+  communityById?: {
+    __typename?: 'Community';
+    filesByType?: Array<{
+      __typename?: 'FileInfo';
+      name: string;
+      type: string;
+      url: string;
+      size: number;
+    } | null> | null;
+  } | null;
+};
+
 export type CommunityCreateContainerMutationCommunityCreateMutationVariables = Exact<{
   input: CommunityCreateInput;
 }>;
@@ -7122,6 +7140,67 @@ export const LoggedInUserContainerUserCurrentFieldsFragmentDoc = {
     }
   ]
 } as unknown as DocumentNode<LoggedInUserContainerUserCurrentFieldsFragment, unknown>;
+export const GetImagesInCommunityDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetImagesInCommunity' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'communityId' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'communityById' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'communityId' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'filesByType' },
+                  arguments: [
+                    {
+                      kind: 'Argument',
+                      name: { kind: 'Name', value: 'type' },
+                      value: { kind: 'StringValue', value: 'image', block: false }
+                    }
+                  ],
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'type' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'url' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'size' } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<GetImagesInCommunityQuery, GetImagesInCommunityQueryVariables>;
 export const CommunityCreateContainerMutationCommunityCreateDocument = {
   kind: 'Document',
   definitions: [
