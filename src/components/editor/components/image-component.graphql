@@ -1,0 +1,10 @@
+  query GetImagesInCommunity($communityId: ID!) {
+    communityById(id: $communityId) {
+      filesByType(type: "image") {
+        name
+        type
+        url
+        size
+      }
+    }
+  }

@@ -2,22 +2,10 @@ import { useNode } from '@craftjs/core'
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import { Form, Image, Skeleton, Select, Row, Col, Slider, InputNumber, Modal, Button } from 'antd'
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
+import { GetImagesInCommunityDocument } from '../../../generated';
 
 const { Option } = Select;
-
-const GET_IMAGES_IN_COMMUNITY = gql`
-  query GetImagesInCommunity($communityId: ID!) {
-    communityById(id: $communityId) {
-      filesByType(type: "image") {
-        name
-        type
-        url
-        size
-      }
-    }
-  }
-`;
 
 interface ImageProp {
   src: string;
@@ -53,8 +41,8 @@ var ImageComponentSettings = () => {
     width: node.data.props.width,
   }));
 
-  const { data, loading, error } = useQuery(GET_IMAGES_IN_COMMUNITY, {
-    variables: { communityId: params.communityId}
+  const { data, loading, error } = useQuery(GetImagesInCommunityDocument, {
+    variables: { communityId: params.communityId ?? ''}
   });
 
   if (loading) {
@@ -83,7 +71,7 @@ var ImageComponentSettings = () => {
               }} 
               onCancel={() => setModalVisible(false)}
             >
-              {data.communityById.filesByType.map((file: any) => (
+              {data.communityById && data.communityById.filesByType && data.communityById.filesByType.map((file: any) => (
                   <Image 
                     src={file.url} 
                     fallback="https://joeschmoe.io/api/v1/random" 
