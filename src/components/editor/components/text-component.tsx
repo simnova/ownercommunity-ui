@@ -13,7 +13,7 @@ interface TextComponentProp {
 
 let TextComponent: any;
 
-TextComponent = ({text, fontSize, fontWeight, ...props }:TextComponentProp) => {
+TextComponent = ({text, fontSize, fontWeight, color, ...props }:TextComponentProp) => {
   const { actions, connectors: {connect, drag} } = useNode();
 
   return (
@@ -21,16 +21,17 @@ TextComponent = ({text, fontSize, fontWeight, ...props }:TextComponentProp) => {
       className="px-4 py-2"
       ref={ref => connect(drag(ref as HTMLDivElement))}
     >
-        <Text style={{ fontSize: fontSize ? fontSize : 14, fontWeight: fontWeight ? fontWeight : 400}}>{text}</Text>
+        <Text style={{ fontSize: fontSize ? fontSize : 14, fontWeight: fontWeight ? fontWeight : 400, color: color ? color : '#000' }}>{text}</Text>
     </div>
   )
 }
 
 var TextComponentSettings = () => {
-  const { actions: { setProp}, text, fontSize, fontWeight } = useNode((node) => ({
+  const { actions: { setProp}, text, fontSize, fontWeight, color } = useNode((node) => ({
     text: node.data.props.text,
     fontSize: node.data.props.fontSize,
     fontWeight: node.data.props.fontWeight,
+    color: node.data.props.color,
   }));
 
   return (
@@ -57,6 +58,13 @@ var TextComponentSettings = () => {
             onChange={(inputElement) => setProp((props: any) => props.fontWeight = parseInt(inputElement.target.value))}
           />
         </Form.Item>
+        <Form.Item label="Text Color">
+          <Input
+            placeholder="#000000"
+            value={color}
+            onChange={(inputElement) => setProp((props: any) => props.color = inputElement.target.value)}
+          />
+        </Form.Item>
       </Form>
     </div>
   )
@@ -67,6 +75,7 @@ TextComponent.craft = {
     text: 'Text goes here',
     fontSize: 14,
     fontWeight: 400,
+    color: '#000000',
   },
   related: {
     settings: TextComponentSettings
