@@ -1,7 +1,7 @@
 import { useNode } from "@craftjs/core";
 import React, { useEffect, useState } from"react";
 import { useParams } from 'react-router-dom';
-import { Carousel, Image, Form, Modal, Button, Skeleton, Layout, Slider, Space } from 'antd';
+import { Carousel, Image, Form, Modal, Button, Skeleton, Layout, Slider, Space, Row, Col, InputNumber } from 'antd';
 import { FileImageOutlined, CloseCircleTwoTone } from '@ant-design/icons';
 import { useQuery } from '@apollo/client';
 import { GetImagesInCommunityDocument } from '../../../generated';
@@ -128,9 +128,9 @@ var CarouselComponentSettings = () => {
             {images && images.length > 0 && 
               images.map((image: string, index: any) => {
                 return (
-                  <div key={index}>
+                  <div key={index} style={{ margin: '5px' }}>
                     <Space size="middle">
-                      <p>Image #{index+1}</p>
+                      <span>Image #{index+1}</span>
                       <CloseCircleTwoTone twoToneColor="red" onClick={e => handleClick(image)}/>
                     </Space>
                   </div>
@@ -138,7 +138,25 @@ var CarouselComponentSettings = () => {
             })}
           </Form.Item>
           <Form.Item label="Image Width">
-            <Slider min={1} max={2000} defaultValue={imageWidth} onChange={(value: number) => setProp((props: any) => props.imageWidth = value)} />
+            <Row>
+              <Col span={12}>
+                <Slider 
+                  min={1} 
+                  max={2000} 
+                  value={imageWidth} 
+                  onChange={(value: number) => setProp((props: any) => props.imageWidth = value)} 
+                />
+              </Col>
+              <Col span={4}>
+                <InputNumber
+                  min={1}
+                  max={2000}
+                  style={{ margin: '0 16px' }}
+                  value={imageWidth}
+                  onChange={(inputElement) => setProp((props: any) => props.imageWidth = inputElement)}
+                />
+                </Col>
+            </Row>
           </Form.Item>
         </Form>
       </div>
