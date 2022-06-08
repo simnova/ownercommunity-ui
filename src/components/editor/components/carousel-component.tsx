@@ -1,20 +1,34 @@
 import { useNode } from "@craftjs/core";
-import { useState, } from"react";
+import React, { useEffect, useState } from"react";
 import { useParams } from 'react-router-dom';
-import { Carousel, Image, Form, Modal, Button, Skeleton } from 'antd';
-import { FileImageOutlined } from '@ant-design/icons';
+import { Carousel, Image, Form, Modal, Button, Skeleton, Layout, Slider, Space } from 'antd';
+import { FileImageOutlined, CloseCircleTwoTone } from '@ant-design/icons';
 import { useQuery } from '@apollo/client';
 import { GetImagesInCommunityDocument } from '../../../generated';
 
-
+const { Content } = Layout;
 interface CarouselComponentProp {
   images: string[];
+  imageWidth: number;
 }
 
 let CarouselComponent: any;
 
-CarouselComponent = ({ images }: CarouselComponentProp) => {
+CarouselComponent = ({ images, imageWidth }: CarouselComponentProp) => {
   const { connectors: { connect, drag } } = useNode();
+
+  useEffect(() => {
+    var carouselDivs = document.getElementsByClassName('carousel-component');
+    console.log("DIVS ", carouselDivs);
+    for (var i = 0; i < carouselDivs.length; i++) {
+      var carouselDiv = carouselDivs[i];
+      console.log(carouselDiv.parentElement);
+      if (carouselDiv.parentElement) {
+        carouselDiv.parentElement.style.display = 'block';
+        carouselDiv.parentElement.style.maxWidth = `68vw`;
+      }
+    }
+  }, [images, imageWidth]);
 
   const onChange = (currentSlide: number) => {
     console.log(currentSlide);
@@ -22,16 +36,16 @@ CarouselComponent = ({ images }: CarouselComponentProp) => {
 
   return (
     <div
-      className="px-4 py-2"
+      className="px-4 py-2 carousel-component"
       ref={ref => connect(drag(ref as HTMLDivElement))}
     >
-      <div className="bg-white shadow overflow-hidden sm:rounded" >
+      <div className='bg-white sm:rounded shadow' style={{ overflow: 'hidden' }}>
         {images.length > 0 && 
-          <Carousel afterChange={onChange} autoplay infinite={false}>
-            {images.map(image => {
+          <Carousel afterChange={onChange} >
+            {images.map((image, index) => {
               return (
-                <div>
-                  <Image preview={false} src={image} />
+                <div key={index}>
+                  <Image src={image} preview={false} width={imageWidth} />
                 </div>
               )
             })}
@@ -40,7 +54,7 @@ CarouselComponent = ({ images }: CarouselComponentProp) => {
         {images.length === 0 && 
           <div 
             style={{ 
-              height: '50px', 
+              height: '100px', 
               width: '100%', 
               display: 'flex', 
               flexDirection: 'column', 
@@ -59,9 +73,14 @@ var CarouselComponentSettings = () => {
   const [imageUrl, setImageUrl] = useState<string>("");
   const [isModalVisible, setModalVisible] = useState<boolean>(false);
 
-  const { actions: { setProp}, images } = useNode((node) => ({
+  const { actions: { setProp}, images, imageWidth } = useNode((node) => ({
     images: node.data.props.images,
+    imageWidth: node.data.props.imageWidth
   }));
+
+  const handleClick = (image: string) => {
+    setProp((props: any) => props.images = props.images.filter((str: string) => str !== image));
+  }
 
   const { data, loading, error } = useQuery(GetImagesInCommunityDocument, {
     variables: { communityId: params.communityId ?? ''}
@@ -78,7 +97,7 @@ var CarouselComponentSettings = () => {
     return (
       <div>
         <Form layout="vertical">
-          <Form.Item label="Images">
+          <Form.Item>
             <Button type='primary' onClick={() => setModalVisible(true)}>
               Add an image
             </Button> 
@@ -86,9 +105,11 @@ var CarouselComponentSettings = () => {
               title="Add an image"
               visible={isModalVisible}
               onOk={() => {
-                setProp((props: any) => props.images = [...props.images, imageUrl]);
+                setProp((props: any) => {
+                  console.log("IMAGES ", images);
+                  props.images = [...images, imageUrl];
+                });
                 setModalVisible(false);
-                setImageUrl("");
               }}
               onCancel={() => setModalVisible(false)}
             >
@@ -104,6 +125,20 @@ var CarouselComponentSettings = () => {
               ))}
               {data.communityById && data.communityById.filesByType && data.communityById.filesByType.length === 0 && <div>No images in this community</div>}
             </Modal>
+            {images && images.length > 0 && 
+              images.map((image: string, index: any) => {
+                return (
+                  <div key={index}>
+                    <Space size="middle">
+                      <p>Image #{index+1}</p>
+                      <CloseCircleTwoTone twoToneColor="red" onClick={e => handleClick(image)}/>
+                    </Space>
+                  </div>
+                )
+            })}
+          </Form.Item>
+          <Form.Item label="Image Width">
+            <Slider min={1} max={2000} defaultValue={imageWidth} onChange={(value: number) => setProp((props: any) => props.imageWidth = value)} />
           </Form.Item>
         </Form>
       </div>
@@ -113,6 +148,10 @@ var CarouselComponentSettings = () => {
 }
 
 CarouselComponent.craft = {
+  props: {
+    images: [],
+    imageWidth: 600,
+  },
   related: {
     settings: CarouselComponentSettings
   }
