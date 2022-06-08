@@ -1,34 +1,21 @@
 import { useNode } from "@craftjs/core";
-import React, { useEffect, useState } from"react";
+import { useEffect, useState } from"react";
 import { useParams } from 'react-router-dom';
-import { Carousel, Image, Form, Modal, Button, Skeleton, Layout, Slider, Space, Row, Col, InputNumber } from 'antd';
+import { Carousel, Image, Form, Modal, Button, Skeleton, Slider, Space, Row, Col, InputNumber, Switch } from 'antd';
 import { FileImageOutlined, CloseCircleTwoTone } from '@ant-design/icons';
 import { useQuery } from '@apollo/client';
 import { GetImagesInCommunityDocument } from '../../../generated';
 
-const { Content } = Layout;
 interface CarouselComponentProp {
   images: string[];
-  imageWidth: number;
+  width: number;
+  autoplay: boolean;
 }
 
 let CarouselComponent: any;
 
-CarouselComponent = ({ images, imageWidth }: CarouselComponentProp) => {
+CarouselComponent = ({ images, width, autoplay }: CarouselComponentProp) => {
   const { connectors: { connect, drag } } = useNode();
-
-  useEffect(() => {
-    var carouselDivs = document.getElementsByClassName('carousel-component');
-    console.log("DIVS ", carouselDivs);
-    for (var i = 0; i < carouselDivs.length; i++) {
-      var carouselDiv = carouselDivs[i];
-      console.log(carouselDiv.parentElement);
-      if (carouselDiv.parentElement) {
-        carouselDiv.parentElement.style.display = 'block';
-        carouselDiv.parentElement.style.maxWidth = `68vw`;
-      }
-    }
-  }, [images, imageWidth]);
 
   const onChange = (currentSlide: number) => {
     console.log(currentSlide);
@@ -39,13 +26,13 @@ CarouselComponent = ({ images, imageWidth }: CarouselComponentProp) => {
       className="px-4 py-2 carousel-component"
       ref={ref => connect(drag(ref as HTMLDivElement))}
     >
-      <div className='bg-white sm:rounded shadow' style={{ overflow: 'hidden' }}>
+      <div className='bg-white sm:rounded shadow' style={{ overflow: 'hidden', maxWidth: '68vw' }}>
         {images.length > 0 && 
-          <Carousel afterChange={onChange} >
+          <Carousel afterChange={onChange} autoplay={autoplay} >
             {images.map((image, index) => {
               return (
                 <div key={index}>
-                  <Image src={image} preview={false} width={imageWidth} />
+                  <Image src={image} preview={false} width={width} />
                 </div>
               )
             })}
@@ -73,19 +60,27 @@ var CarouselComponentSettings = () => {
   const [imageUrl, setImageUrl] = useState<string>("");
   const [isModalVisible, setModalVisible] = useState<boolean>(false);
 
-  const { actions: { setProp}, images, imageWidth } = useNode((node) => ({
+  const { actions: { setProp}, images, width, autoplay } = useNode((node) => ({
     images: node.data.props.images,
-    imageWidth: node.data.props.imageWidth
+    width: node.data.props.width,
+    autoplay: node.data.props.autoplay,
   }));
 
-  const handleClick = (image: string) => {
-    setProp((props: any) => props.images = props.images.filter((str: string) => str !== image));
+  const handleClick = (index: number) => {
+    setProp((props: any) => {
+      props.images.splice(index, 1);
+      return props;
+    })
+  }
+
+  const toggleAutoplay = () => {
+    setProp((props: any) => props.autoplay = !autoplay);
   }
 
   const { data, loading, error } = useQuery(GetImagesInCommunityDocument, {
     variables: { communityId: params.communityId ?? ''}
   });
-  
+
 
   if (loading) {
     return <Skeleton active />
@@ -105,10 +100,7 @@ var CarouselComponentSettings = () => {
               title="Add an image"
               visible={isModalVisible}
               onOk={() => {
-                setProp((props: any) => {
-                  console.log("IMAGES ", images);
-                  props.images = [...images, imageUrl];
-                });
+                setProp((props: any) => props.images = [...images, imageUrl]);
                 setModalVisible(false);
               }}
               onCancel={() => setModalVisible(false)}
@@ -126,12 +118,12 @@ var CarouselComponentSettings = () => {
               {data.communityById && data.communityById.filesByType && data.communityById.filesByType.length === 0 && <div>No images in this community</div>}
             </Modal>
             {images && images.length > 0 && 
-              images.map((image: string, index: any) => {
+              images.map((_: any, index: number) => {
                 return (
                   <div key={index} style={{ margin: '5px' }}>
                     <Space size="middle">
                       <span>Image #{index+1}</span>
-                      <CloseCircleTwoTone twoToneColor="red" onClick={e => handleClick(image)}/>
+                      <CloseCircleTwoTone twoToneColor="red" onClick={e => handleClick(index)}/>
                     </Space>
                   </div>
                 )
@@ -143,8 +135,8 @@ var CarouselComponentSettings = () => {
                 <Slider 
                   min={1} 
                   max={2000} 
-                  value={imageWidth} 
-                  onChange={(value: number) => setProp((props: any) => props.imageWidth = value)} 
+                  value={width} 
+                  onChange={(value: number) => setProp((props: any) => props.width = value)} 
                 />
               </Col>
               <Col span={4}>
@@ -152,11 +144,14 @@ var CarouselComponentSettings = () => {
                   min={1}
                   max={2000}
                   style={{ margin: '0 16px' }}
-                  value={imageWidth}
-                  onChange={(inputElement) => setProp((props: any) => props.imageWidth = inputElement)}
+                  value={width}
+                  onChange={(inputElement) => setProp((props: any) => props.width = inputElement)}
                 />
                 </Col>
             </Row>
+          </Form.Item>
+          <Form.Item label="Autoplay">
+            <Switch checked={autoplay} onChange={toggleAutoplay} />
           </Form.Item>
         </Form>
       </div>
@@ -168,7 +163,8 @@ var CarouselComponentSettings = () => {
 CarouselComponent.craft = {
   props: {
     images: [],
-    imageWidth: 600,
+    width: 600,
+    autoplay: false,
   },
   related: {
     settings: CarouselComponentSettings
