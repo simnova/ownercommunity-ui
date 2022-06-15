@@ -100,30 +100,38 @@ export type Address = {
   countrySubdivision?: Maybe<Scalars['String']>;
   countrySubdivisionName?: Maybe<Scalars['String']>;
   countryTertiarySubdivision?: Maybe<Scalars['String']>;
+  crossStreet?: Maybe<Scalars['String']>;
   extendedPostalCode?: Maybe<Scalars['String']>;
   freeformAddress?: Maybe<Scalars['String']>;
+  localName?: Maybe<Scalars['String']>;
   municipality?: Maybe<Scalars['String']>;
   municipalitySubdivision?: Maybe<Scalars['String']>;
   postalCode?: Maybe<Scalars['String']>;
+  routeNumbers?: Maybe<Scalars['String']>;
   streetName?: Maybe<Scalars['String']>;
+  streetNameAndNumber?: Maybe<Scalars['String']>;
   streetNumber?: Maybe<Scalars['String']>;
 };
 
 export type AddressInput = {
-  country?: InputMaybe<Scalars['String']>;
-  countryCode?: InputMaybe<Scalars['String']>;
-  countryCodeISO3?: InputMaybe<Scalars['String']>;
-  countrySecondarySubdivision?: InputMaybe<Scalars['String']>;
-  countrySubdivision?: InputMaybe<Scalars['String']>;
-  countrySubdivisionName?: InputMaybe<Scalars['String']>;
-  countryTertiarySubdivision?: InputMaybe<Scalars['String']>;
-  extendedPostalCode?: InputMaybe<Scalars['String']>;
-  freeformAddress?: InputMaybe<Scalars['String']>;
-  municipality?: InputMaybe<Scalars['String']>;
-  municipalitySubdivision?: InputMaybe<Scalars['String']>;
-  postalCode?: InputMaybe<Scalars['String']>;
-  streetName?: InputMaybe<Scalars['String']>;
-  streetNumber?: InputMaybe<Scalars['String']>;
+  country: Scalars['String'];
+  countryCode: Scalars['String'];
+  countryCodeISO3: Scalars['String'];
+  countrySecondarySubdivision: Scalars['String'];
+  countrySubdivision: Scalars['String'];
+  countrySubdivisionName: Scalars['String'];
+  countryTertiarySubdivision: Scalars['String'];
+  crossStreet: Scalars['String'];
+  extendedPostalCode: Scalars['String'];
+  freeformAddress: Scalars['String'];
+  localName: Scalars['String'];
+  municipality: Scalars['String'];
+  municipalitySubdivision: Scalars['String'];
+  postalCode: Scalars['String'];
+  routeNumbers: Scalars['String'];
+  streetName: Scalars['String'];
+  streetNameAndNumber: Scalars['String'];
+  streetNumber: Scalars['String'];
 };
 
 export type BedroomDetails = {
@@ -262,6 +270,7 @@ export type FileInfo = {
 };
 
 export type FilterDetail = {
+  listedInfo?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   listingDetail?: InputMaybe<ListingDetailsFilterInput>;
   propertyType?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
 };
@@ -345,7 +354,7 @@ export type Location = MongoBase & {
 export type LocationInput = {
   address?: InputMaybe<AddressInput>;
   createdAt?: InputMaybe<Scalars['DateTime']>;
-  id: Scalars['ObjectID'];
+  id?: InputMaybe<Scalars['ObjectID']>;
   position?: InputMaybe<PointInput>;
   schemaVersion?: InputMaybe<Scalars['String']>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
@@ -714,7 +723,7 @@ export type Point = MongoBase & {
 export type PointInput = {
   coordinates?: InputMaybe<Array<InputMaybe<Scalars['Float']>>>;
   createdAt?: InputMaybe<Scalars['DateTime']>;
-  id: Scalars['ObjectID'];
+  id?: InputMaybe<Scalars['ObjectID']>;
   schemaVersion?: InputMaybe<Scalars['String']>;
   type?: InputMaybe<Scalars['String']>;
   updatedAt?: InputMaybe<Scalars['DateTime']>;
@@ -741,6 +750,7 @@ export type Property = MongoBase & {
   listedInDirectory: Scalars['Boolean'];
   listingDetail?: Maybe<ListingDetails>;
   location?: Maybe<Location>;
+  mapSASToken?: Maybe<Scalars['String']>;
   owner?: Maybe<Member>;
   propertyName: Scalars['String'];
   propertyType?: Maybe<Scalars['String']>;
@@ -810,6 +820,9 @@ export type PropertyResult = {
   coordinates?: Maybe<Array<Maybe<Scalars['Float']>>>;
   id?: Maybe<Scalars['String']>;
   images?: Maybe<Array<Maybe<Scalars['String']>>>;
+  listedForLease?: Maybe<Scalars['Boolean']>;
+  listedForRent?: Maybe<Scalars['Boolean']>;
+  listedForSale?: Maybe<Scalars['Boolean']>;
   listingAgentCompany?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   price?: Maybe<Scalars['Float']>;
@@ -822,6 +835,9 @@ export type PropertySearchFacets = {
   additionalAmenitiesAmenities?: Maybe<Array<Maybe<FacetDetail>>>;
   additionalAmenitiesCategory?: Maybe<Array<Maybe<FacetDetail>>>;
   amenities?: Maybe<Array<Maybe<FacetDetail>>>;
+  listedForLease?: Maybe<Array<Maybe<FacetDetail>>>;
+  listedForRent?: Maybe<Array<Maybe<FacetDetail>>>;
+  listedForSale?: Maybe<Array<Maybe<FacetDetail>>>;
   type?: Maybe<Array<Maybe<FacetDetail>>>;
 };
 
@@ -2966,6 +2982,7 @@ export type MemberPropertyByPropertyIdQuery = {
         __typename?: 'Address';
         streetName?: string | null;
         streetNumber?: string | null;
+        freeformAddress?: string | null;
       } | null;
     } | null;
     listingDetail?: {
@@ -3021,6 +3038,7 @@ export type PropertyDetailsByPropertyIdFieldsFragment = {
       __typename?: 'Address';
       streetName?: string | null;
       streetNumber?: string | null;
+      freeformAddress?: string | null;
     } | null;
   } | null;
   listingDetail?: {
@@ -3526,6 +3544,7 @@ export type MemberPropertiesListSearchContainerPropertiesQuery = {
     propertyResults?: Array<{
       __typename?: 'PropertyResult';
       communityId?: string | null;
+      id?: string | null;
       name?: string | null;
       type?: string | null;
       bedrooms?: number | null;
@@ -3536,6 +3555,9 @@ export type MemberPropertiesListSearchContainerPropertiesQuery = {
       coordinates?: Array<number | null> | null;
       images?: Array<string | null> | null;
       listingAgentCompany?: string | null;
+      listedForSale?: boolean | null;
+      listedForRent?: boolean | null;
+      listedForLease?: boolean | null;
       additionalAmenities?: Array<{
         __typename?: 'AdditionalAmenitiesSearchResult';
         category?: string | null;
@@ -3547,6 +3569,7 @@ export type MemberPropertiesListSearchContainerPropertiesQuery = {
         streetName?: string | null;
         municipality?: string | null;
         municipalitySubdivision?: string | null;
+        localName?: string | null;
         countrySecondarySubdivision?: string | null;
         countryTertiarySubdivision?: string | null;
         countrySubdivision?: string | null;
@@ -3557,6 +3580,9 @@ export type MemberPropertiesListSearchContainerPropertiesQuery = {
         country?: string | null;
         countryCodeISO3?: string | null;
         freeformAddress?: string | null;
+        streetNameAndNumber?: string | null;
+        routeNumbers?: string | null;
+        crossStreet?: string | null;
       } | null;
     } | null> | null;
     facets?: {
@@ -3581,6 +3607,21 @@ export type MemberPropertiesListSearchContainerPropertiesQuery = {
         value?: string | null;
         count?: number | null;
       } | null> | null;
+      listedForSale?: Array<{
+        __typename?: 'FacetDetail';
+        value?: string | null;
+        count?: number | null;
+      } | null> | null;
+      listedForRent?: Array<{
+        __typename?: 'FacetDetail';
+        value?: string | null;
+        count?: number | null;
+      } | null> | null;
+      listedForLease?: Array<{
+        __typename?: 'FacetDetail';
+        value?: string | null;
+        count?: number | null;
+      } | null> | null;
     } | null;
   } | null;
 };
@@ -3591,6 +3632,7 @@ export type MemberPropertiesListSearchContainerPropertyFieldsFragment = {
   propertyResults?: Array<{
     __typename?: 'PropertyResult';
     communityId?: string | null;
+    id?: string | null;
     name?: string | null;
     type?: string | null;
     bedrooms?: number | null;
@@ -3601,6 +3643,9 @@ export type MemberPropertiesListSearchContainerPropertyFieldsFragment = {
     coordinates?: Array<number | null> | null;
     images?: Array<string | null> | null;
     listingAgentCompany?: string | null;
+    listedForSale?: boolean | null;
+    listedForRent?: boolean | null;
+    listedForLease?: boolean | null;
     additionalAmenities?: Array<{
       __typename?: 'AdditionalAmenitiesSearchResult';
       category?: string | null;
@@ -3612,6 +3657,7 @@ export type MemberPropertiesListSearchContainerPropertyFieldsFragment = {
       streetName?: string | null;
       municipality?: string | null;
       municipalitySubdivision?: string | null;
+      localName?: string | null;
       countrySecondarySubdivision?: string | null;
       countryTertiarySubdivision?: string | null;
       countrySubdivision?: string | null;
@@ -3622,6 +3668,9 @@ export type MemberPropertiesListSearchContainerPropertyFieldsFragment = {
       country?: string | null;
       countryCodeISO3?: string | null;
       freeformAddress?: string | null;
+      streetNameAndNumber?: string | null;
+      routeNumbers?: string | null;
+      crossStreet?: string | null;
     } | null;
   } | null> | null;
   facets?: {
@@ -3646,12 +3695,28 @@ export type MemberPropertiesListSearchContainerPropertyFieldsFragment = {
       value?: string | null;
       count?: number | null;
     } | null> | null;
+    listedForSale?: Array<{
+      __typename?: 'FacetDetail';
+      value?: string | null;
+      count?: number | null;
+    } | null> | null;
+    listedForRent?: Array<{
+      __typename?: 'FacetDetail';
+      value?: string | null;
+      count?: number | null;
+    } | null> | null;
+    listedForLease?: Array<{
+      __typename?: 'FacetDetail';
+      value?: string | null;
+      count?: number | null;
+    } | null> | null;
   } | null;
 };
 
 export type MembersPropertiesListSearchContainerPropertyResultFieldsFragment = {
   __typename?: 'PropertyResult';
   communityId?: string | null;
+  id?: string | null;
   name?: string | null;
   type?: string | null;
   bedrooms?: number | null;
@@ -3662,6 +3727,9 @@ export type MembersPropertiesListSearchContainerPropertyResultFieldsFragment = {
   coordinates?: Array<number | null> | null;
   images?: Array<string | null> | null;
   listingAgentCompany?: string | null;
+  listedForSale?: boolean | null;
+  listedForRent?: boolean | null;
+  listedForLease?: boolean | null;
   additionalAmenities?: Array<{
     __typename?: 'AdditionalAmenitiesSearchResult';
     category?: string | null;
@@ -3673,6 +3741,7 @@ export type MembersPropertiesListSearchContainerPropertyResultFieldsFragment = {
     streetName?: string | null;
     municipality?: string | null;
     municipalitySubdivision?: string | null;
+    localName?: string | null;
     countrySecondarySubdivision?: string | null;
     countryTertiarySubdivision?: string | null;
     countrySubdivision?: string | null;
@@ -3683,6 +3752,9 @@ export type MembersPropertiesListSearchContainerPropertyResultFieldsFragment = {
     country?: string | null;
     countryCodeISO3?: string | null;
     freeformAddress?: string | null;
+    streetNameAndNumber?: string | null;
+    routeNumbers?: string | null;
+    crossStreet?: string | null;
   } | null;
 };
 
@@ -3941,6 +4013,149 @@ export type MembersPropertiesListingImageUploadContainerPropertyFieldsFragment =
   createdAt?: any | null;
   updatedAt?: any | null;
   listingDetail?: { __typename?: 'ListingDetails'; images?: Array<string | null> | null } | null;
+};
+
+export type PropertiesLocationContainerPropertyQueryVariables = Exact<{
+  propertyId: Scalars['ObjectID'];
+}>;
+
+export type PropertiesLocationContainerPropertyQuery = {
+  __typename?: 'Query';
+  property?: {
+    __typename?: 'Property';
+    mapSASToken?: string | null;
+    id: any;
+    location?: {
+      __typename?: 'Location';
+      address?: {
+        __typename?: 'Address';
+        country?: string | null;
+        countryCode?: string | null;
+        countryCodeISO3?: string | null;
+        countrySecondarySubdivision?: string | null;
+        countrySubdivision?: string | null;
+        countrySubdivisionName?: string | null;
+        countryTertiarySubdivision?: string | null;
+        extendedPostalCode?: string | null;
+        freeformAddress?: string | null;
+        municipality?: string | null;
+        municipalitySubdivision?: string | null;
+        crossStreet?: string | null;
+        localName?: string | null;
+        postalCode?: string | null;
+        streetName?: string | null;
+        streetNumber?: string | null;
+        routeNumbers?: string | null;
+        streetNameAndNumber?: string | null;
+      } | null;
+      position?: { __typename?: 'Point'; coordinates?: Array<number | null> | null } | null;
+    } | null;
+  } | null;
+};
+
+export type AddressLocationUpdateContainerMutationVariables = Exact<{
+  input: PropertyUpdateInput;
+}>;
+
+export type AddressLocationUpdateContainerMutation = {
+  __typename?: 'Mutation';
+  propertyUpdate: {
+    __typename?: 'PropertyMutationResult';
+    status: { __typename?: 'MutationStatus'; success: boolean; errorMessage?: string | null };
+    property?: {
+      __typename?: 'Property';
+      id: any;
+      location?: {
+        __typename?: 'Location';
+        address?: {
+          __typename?: 'Address';
+          country?: string | null;
+          countryCode?: string | null;
+          countryCodeISO3?: string | null;
+          countrySecondarySubdivision?: string | null;
+          countrySubdivision?: string | null;
+          countrySubdivisionName?: string | null;
+          countryTertiarySubdivision?: string | null;
+          extendedPostalCode?: string | null;
+          freeformAddress?: string | null;
+          municipality?: string | null;
+          municipalitySubdivision?: string | null;
+          crossStreet?: string | null;
+          localName?: string | null;
+          postalCode?: string | null;
+          streetName?: string | null;
+          streetNumber?: string | null;
+          routeNumbers?: string | null;
+          streetNameAndNumber?: string | null;
+        } | null;
+        position?: { __typename?: 'Point'; coordinates?: Array<number | null> | null } | null;
+      } | null;
+    } | null;
+  };
+};
+
+export type AddressLocationContainerPropertyMutationResultFieldsFragment = {
+  __typename?: 'PropertyMutationResult';
+  status: { __typename?: 'MutationStatus'; success: boolean; errorMessage?: string | null };
+  property?: {
+    __typename?: 'Property';
+    id: any;
+    location?: {
+      __typename?: 'Location';
+      address?: {
+        __typename?: 'Address';
+        country?: string | null;
+        countryCode?: string | null;
+        countryCodeISO3?: string | null;
+        countrySecondarySubdivision?: string | null;
+        countrySubdivision?: string | null;
+        countrySubdivisionName?: string | null;
+        countryTertiarySubdivision?: string | null;
+        extendedPostalCode?: string | null;
+        freeformAddress?: string | null;
+        municipality?: string | null;
+        municipalitySubdivision?: string | null;
+        crossStreet?: string | null;
+        localName?: string | null;
+        postalCode?: string | null;
+        streetName?: string | null;
+        streetNumber?: string | null;
+        routeNumbers?: string | null;
+        streetNameAndNumber?: string | null;
+      } | null;
+      position?: { __typename?: 'Point'; coordinates?: Array<number | null> | null } | null;
+    } | null;
+  } | null;
+};
+
+export type AddressLocationContainerPropertyFieldsFragment = {
+  __typename?: 'Property';
+  id: any;
+  location?: {
+    __typename?: 'Location';
+    address?: {
+      __typename?: 'Address';
+      country?: string | null;
+      countryCode?: string | null;
+      countryCodeISO3?: string | null;
+      countrySecondarySubdivision?: string | null;
+      countrySubdivision?: string | null;
+      countrySubdivisionName?: string | null;
+      countryTertiarySubdivision?: string | null;
+      extendedPostalCode?: string | null;
+      freeformAddress?: string | null;
+      municipality?: string | null;
+      municipalitySubdivision?: string | null;
+      crossStreet?: string | null;
+      localName?: string | null;
+      postalCode?: string | null;
+      streetName?: string | null;
+      streetNumber?: string | null;
+      routeNumbers?: string | null;
+      streetNameAndNumber?: string | null;
+    } | null;
+    position?: { __typename?: 'Point'; coordinates?: Array<number | null> | null } | null;
+  } | null;
 };
 
 export type MembersServiceTicketsCreateContainerMembersQueryVariables = Exact<{
@@ -5984,7 +6199,8 @@ export const PropertyDetailsByPropertyIdFieldsFragmentDoc = {
                     kind: 'SelectionSet',
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'streetName' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'streetNumber' } }
+                      { kind: 'Field', name: { kind: 'Name', value: 'streetNumber' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'freeformAddress' } }
                     ]
                   }
                 }
@@ -6432,6 +6648,7 @@ export const MembersPropertiesListSearchContainerPropertyResultFieldsFragmentDoc
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'communityId' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'name' } },
           { kind: 'Field', name: { kind: 'Name', value: 'type' } },
           { kind: 'Field', name: { kind: 'Name', value: 'bedrooms' } },
@@ -6463,6 +6680,7 @@ export const MembersPropertiesListSearchContainerPropertyResultFieldsFragmentDoc
                 { kind: 'Field', name: { kind: 'Name', value: 'streetName' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'municipality' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'municipalitySubdivision' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'localName' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'countrySecondarySubdivision' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'countryTertiarySubdivision' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'countrySubdivision' } },
@@ -6472,10 +6690,16 @@ export const MembersPropertiesListSearchContainerPropertyResultFieldsFragmentDoc
                 { kind: 'Field', name: { kind: 'Name', value: 'countryCode' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'country' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'countryCodeISO3' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'freeformAddress' } }
+                { kind: 'Field', name: { kind: 'Name', value: 'freeformAddress' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'streetNameAndNumber' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'routeNumbers' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'crossStreet' } }
               ]
             }
-          }
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'listedForSale' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'listedForRent' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'listedForLease' } }
         ]
       }
     }
@@ -6553,6 +6777,39 @@ export const MemberPropertiesListSearchContainerPropertyFieldsFragmentDoc = {
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'additionalAmenitiesAmenities' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'count' } }
+                    ]
+                  }
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'listedForSale' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'count' } }
+                    ]
+                  }
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'listedForRent' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'count' } }
+                    ]
+                  }
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'listedForLease' },
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
@@ -6740,6 +6997,112 @@ export const MembersPropertiesListingImageUploadContainerPropertyFieldsFragmentD
   MembersPropertiesListingImageUploadContainerPropertyFieldsFragment,
   unknown
 >;
+export const AddressLocationContainerPropertyFieldsFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'AddressLocationContainerPropertyFields' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'Property' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'location' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'address' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'country' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'countryCode' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'countryCodeISO3' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'countrySecondarySubdivision' }
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'countrySubdivision' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'countrySubdivisionName' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'countryTertiarySubdivision' }
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'extendedPostalCode' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'freeformAddress' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'municipality' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'municipalitySubdivision' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'crossStreet' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'localName' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'postalCode' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'streetName' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'streetNumber' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'routeNumbers' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'streetNameAndNumber' } }
+                    ]
+                  }
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'position' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [{ kind: 'Field', name: { kind: 'Name', value: 'coordinates' } }]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<AddressLocationContainerPropertyFieldsFragment, unknown>;
+export const AddressLocationContainerPropertyMutationResultFieldsFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'AddressLocationContainerPropertyMutationResultFields' },
+      typeCondition: { kind: 'NamedType', name: { kind: 'Name', value: 'PropertyMutationResult' } },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'status' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'success' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'errorMessage' } }
+              ]
+            }
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'property' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'AddressLocationContainerPropertyFields' }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    ...AddressLocationContainerPropertyFieldsFragmentDoc.definitions
+  ]
+} as unknown as DocumentNode<AddressLocationContainerPropertyMutationResultFieldsFragment, unknown>;
 export const MembersServiceTicketsCreateContainerServiceTicketFieldsFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -10785,6 +11148,108 @@ export const MembersPropertiesListingImageUploadContainerPropertyListingImageCre
     MembersPropertiesListingImageUploadContainerPropertyListingImageCreateAuthHeaderMutation,
     MembersPropertiesListingImageUploadContainerPropertyListingImageCreateAuthHeaderMutationVariables
   >;
+export const PropertiesLocationContainerPropertyDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'PropertiesLocationContainerProperty' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'propertyId' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ObjectID' } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'property' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'propertyId' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'mapSASToken' } },
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'AddressLocationContainerPropertyFields' }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    ...AddressLocationContainerPropertyFieldsFragmentDoc.definitions
+  ]
+} as unknown as DocumentNode<
+  PropertiesLocationContainerPropertyQuery,
+  PropertiesLocationContainerPropertyQueryVariables
+>;
+export const AddressLocationUpdateContainerDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'AddressLocationUpdateContainer' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'input' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'PropertyUpdateInput' } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'propertyUpdate' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'input' } }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: {
+                    kind: 'Name',
+                    value: 'AddressLocationContainerPropertyMutationResultFields'
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    ...AddressLocationContainerPropertyMutationResultFieldsFragmentDoc.definitions
+  ]
+} as unknown as DocumentNode<
+  AddressLocationUpdateContainerMutation,
+  AddressLocationUpdateContainerMutationVariables
+>;
 export const MembersServiceTicketsCreateContainerMembersDocument = {
   kind: 'Document',
   definitions: [

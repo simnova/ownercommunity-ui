@@ -49,7 +49,7 @@ export const CommunityPropertyDetail: React.FC<any> = (props) => {
                 title: 'Sale',
                 listedFlag: props.data.property.listedForSale,
                 name: 'sale',
-                location: '123 Street St',
+                location: props.data.property.location.address.freeformAddress,
                 price: [props.data.property.listingDetail.price],
                 listingImages: listingImages
             },
@@ -57,7 +57,7 @@ export const CommunityPropertyDetail: React.FC<any> = (props) => {
                 title: 'Rent',
                 listedFlag: props.data.property.listedForRent,
                 name: 'rental',
-                location: '123 Street St',
+                location: props.data.property.location.address.freeformAddress,
                 price: [props.data.property.listingDetail.rentLow, props.data.property.listingDetail.rentHigh],
                 listingImages: listingImages
             },
@@ -65,7 +65,7 @@ export const CommunityPropertyDetail: React.FC<any> = (props) => {
                 title: 'Lease',
                 listedFlag: props.data.property.listedForLease,
                 name: 'lease',
-                location: '123 Street St',
+                location: props.data.property.location.address.freeformAddress,
                 price: [props.data.property.listingDetail.lease],
                 listingImages: listingImages
             }
@@ -193,7 +193,7 @@ export const CommunityPropertyDetail: React.FC<any> = (props) => {
         <Space direction='vertical'>
             <Space direction='vertical' size={0}>
                 <Title level={2} style={{marginBottom: "0px"}}>{props.data.property.propertyName}</Title>
-                <Text italic style={{color: "gray"}}>Owned By: {props.data.property.owner.memberName}</Text>
+                <Text italic style={{color: "gray"}}>Owned By: {props.data.property.owner?.memberName ? props.data.property.owner.memberName : ''}</Text>
             </Space>
 
             <Space direction='horizontal' size={50} >

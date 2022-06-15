@@ -26,11 +26,24 @@ fragment MemberPropertiesListSearchContainerPropertyFields on PropertySearchResu
       value
       count
     }
+    listedForSale {
+      value
+      count
+    }
+    listedForRent {
+      value
+      count
+    }
+    listedForLease {
+      value
+      count
+    }
   }
 }
 
 fragment MembersPropertiesListSearchContainerPropertyResultFields on PropertyResult {
   communityId
+  id
   name
   type
   bedrooms
@@ -50,6 +63,7 @@ fragment MembersPropertiesListSearchContainerPropertyResultFields on PropertyRes
     streetName
     municipality
     municipalitySubdivision
+    localName
     countrySecondarySubdivision
     countryTertiarySubdivision
     countrySubdivision
@@ -60,5 +74,11 @@ fragment MembersPropertiesListSearchContainerPropertyResultFields on PropertyRes
     country
     countryCodeISO3
     freeformAddress
+    streetNameAndNumber
+    routeNumbers
+    crossStreet
   }
+  listedForSale
+  listedForRent
+  listedForLease
 }
