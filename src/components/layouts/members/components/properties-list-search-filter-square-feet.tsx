@@ -1,7 +1,12 @@
 import { Space, Select, Collapse } from 'antd';
 import { FC, useEffect, useState } from 'react';
 import { useLocation, useSearchParams } from 'react-router-dom';
-import { MaxSquareFeetOptions, MinSquareFeetOptions, SearchParamKeys } from '../../../../constants';
+import {
+  FilterNames,
+  MaxSquareFeetOptions,
+  MinSquareFeetOptions,
+  SearchParamKeys
+} from '../../../../constants';
 import { FilterDetail } from '../../../../generated';
 const { Option } = Select;
 const { Panel } = Collapse;
@@ -66,7 +71,10 @@ export const PropertiesListSearchFilterSquareFeet: FC<PropertiesListSearchFilter
 
   // handle when clear all filter clicked
   useEffect(() => {
-    if (!location.search) {
+    if (
+      !location.search.includes(SearchParamKeys.MaxSquareFeet) &&
+      !location.search.includes(SearchParamKeys.MinSquareFeet)
+    ) {
       setMinSquareFeet(0);
       setMaxSquareFeet(100000);
     }
@@ -74,7 +82,7 @@ export const PropertiesListSearchFilterSquareFeet: FC<PropertiesListSearchFilter
 
   return (
     <Collapse className="search-filter-collapse">
-      <Panel header={<h2 className="font-bold">Square Feet</h2>} key="6">
+      <Panel header={<h2 className="font-bold">Square Feet</h2>} key={FilterNames.SquareFeet}>
         <Space split="-">
           <Select
             defaultValue={minSquareFeet}

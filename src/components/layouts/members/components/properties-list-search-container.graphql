@@ -4,6 +4,10 @@ query MemberPropertiesListSearchContainerProperties($input: PropertiesSearchInpu
   }
 }
 
+query MemberPropertiesListSearchContainerMapSasToken {
+  getMapSasToken
+}
+
 fragment MemberPropertiesListSearchContainerPropertyFields on PropertySearchResult {
   propertyResults {
     ...MembersPropertiesListSearchContainerPropertyResultFields
@@ -55,7 +59,10 @@ fragment MembersPropertiesListSearchContainerPropertyResultFields on PropertyRes
   price
   bathrooms
   squareFeet
-  coordinates
+  position {
+    latitude
+    longitude
+  }
   images
   listingAgentCompany
   address {

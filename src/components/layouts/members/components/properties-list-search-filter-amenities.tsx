@@ -41,14 +41,14 @@ export const PropertiesListSearchFilterAmenities: FC<AmenitiesFilterProps> = (pr
 
   // handle when clear all filter clicked
   useEffect(() => {
-    if (!location.search) {
+    if (!location.search.includes(SearchParamKeys.Amenities)) {
       setSelectedAmenities([]);
     }
   }, [location]);
 
   return (
     <Collapse className="search-filter-collapse">
-      <Panel header={<h2 className="font-bold">Amenities</h2>} key="4">
+      <Panel header={<h2 className="font-bold">Amenities</h2>} key={FilterNames.Amenities}>
         <CheckboxGroup
           key={FilterNames.Amenities}
           options={Amenities.map((value: string) => {

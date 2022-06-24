@@ -270,9 +270,22 @@ export type FileInfo = {
 };
 
 export type FilterDetail = {
+  distance?: InputMaybe<Scalars['Float']>;
   listedInfo?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   listingDetail?: InputMaybe<ListingDetailsFilterInput>;
+  position?: InputMaybe<GeographyPointInput>;
   propertyType?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type GeographyPoint = {
+  __typename?: 'GeographyPoint';
+  latitude?: Maybe<Scalars['Float']>;
+  longitude?: Maybe<Scalars['Float']>;
+};
+
+export type GeographyPointInput = {
+  latitude?: InputMaybe<Scalars['Float']>;
+  longitude?: InputMaybe<Scalars['Float']>;
 };
 
 export type ListingDetails = {
@@ -737,6 +750,9 @@ export type PropertiesSearchInput = {
 export type PropertiesSearchOptions = {
   facets?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   filter?: InputMaybe<FilterDetail>;
+  orderBy?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  skip?: InputMaybe<Scalars['Int']>;
+  top?: InputMaybe<Scalars['Int']>;
 };
 
 export type Property = MongoBase & {
@@ -817,7 +833,6 @@ export type PropertyResult = {
   bathrooms?: Maybe<Scalars['Float']>;
   bedrooms?: Maybe<Scalars['Int']>;
   communityId?: Maybe<Scalars['String']>;
-  coordinates?: Maybe<Array<Maybe<Scalars['Float']>>>;
   id?: Maybe<Scalars['String']>;
   images?: Maybe<Array<Maybe<Scalars['String']>>>;
   listedForLease?: Maybe<Scalars['Boolean']>;
@@ -825,6 +840,7 @@ export type PropertyResult = {
   listedForSale?: Maybe<Scalars['Boolean']>;
   listingAgentCompany?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
+  position?: Maybe<GeographyPoint>;
   price?: Maybe<Scalars['Float']>;
   squareFeet?: Maybe<Scalars['Int']>;
   type?: Maybe<Scalars['String']>;
@@ -871,6 +887,7 @@ export type Query = {
   communityByDomain?: Maybe<Community>;
   communityByHandle?: Maybe<Community>;
   communityById?: Maybe<Community>;
+  getMapSasToken?: Maybe<Scalars['String']>;
   member?: Maybe<Member>;
   memberForCurrentUser?: Maybe<Member>;
   memberForUser?: Maybe<Member>;
@@ -3552,7 +3569,6 @@ export type MemberPropertiesListSearchContainerPropertiesQuery = {
       price?: number | null;
       bathrooms?: number | null;
       squareFeet?: number | null;
-      coordinates?: Array<number | null> | null;
       images?: Array<string | null> | null;
       listingAgentCompany?: string | null;
       listedForSale?: boolean | null;
@@ -3563,6 +3579,11 @@ export type MemberPropertiesListSearchContainerPropertiesQuery = {
         category?: string | null;
         amenities?: Array<string | null> | null;
       } | null> | null;
+      position?: {
+        __typename?: 'GeographyPoint';
+        latitude?: number | null;
+        longitude?: number | null;
+      } | null;
       address?: {
         __typename?: 'Address';
         streetNumber?: string | null;
@@ -3626,6 +3647,15 @@ export type MemberPropertiesListSearchContainerPropertiesQuery = {
   } | null;
 };
 
+export type MemberPropertiesListSearchContainerMapSasTokenQueryVariables = Exact<{
+  [key: string]: never;
+}>;
+
+export type MemberPropertiesListSearchContainerMapSasTokenQuery = {
+  __typename?: 'Query';
+  getMapSasToken?: string | null;
+};
+
 export type MemberPropertiesListSearchContainerPropertyFieldsFragment = {
   __typename?: 'PropertySearchResult';
   count?: number | null;
@@ -3640,7 +3670,6 @@ export type MemberPropertiesListSearchContainerPropertyFieldsFragment = {
     price?: number | null;
     bathrooms?: number | null;
     squareFeet?: number | null;
-    coordinates?: Array<number | null> | null;
     images?: Array<string | null> | null;
     listingAgentCompany?: string | null;
     listedForSale?: boolean | null;
@@ -3651,6 +3680,11 @@ export type MemberPropertiesListSearchContainerPropertyFieldsFragment = {
       category?: string | null;
       amenities?: Array<string | null> | null;
     } | null> | null;
+    position?: {
+      __typename?: 'GeographyPoint';
+      latitude?: number | null;
+      longitude?: number | null;
+    } | null;
     address?: {
       __typename?: 'Address';
       streetNumber?: string | null;
@@ -3724,7 +3758,6 @@ export type MembersPropertiesListSearchContainerPropertyResultFieldsFragment = {
   price?: number | null;
   bathrooms?: number | null;
   squareFeet?: number | null;
-  coordinates?: Array<number | null> | null;
   images?: Array<string | null> | null;
   listingAgentCompany?: string | null;
   listedForSale?: boolean | null;
@@ -3735,6 +3768,11 @@ export type MembersPropertiesListSearchContainerPropertyResultFieldsFragment = {
     category?: string | null;
     amenities?: Array<string | null> | null;
   } | null> | null;
+  position?: {
+    __typename?: 'GeographyPoint';
+    latitude?: number | null;
+    longitude?: number | null;
+  } | null;
   address?: {
     __typename?: 'Address';
     streetNumber?: string | null;
@@ -6667,7 +6705,17 @@ export const MembersPropertiesListSearchContainerPropertyResultFieldsFragmentDoc
           { kind: 'Field', name: { kind: 'Name', value: 'price' } },
           { kind: 'Field', name: { kind: 'Name', value: 'bathrooms' } },
           { kind: 'Field', name: { kind: 'Name', value: 'squareFeet' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'coordinates' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'position' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'latitude' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'longitude' } }
+              ]
+            }
+          },
           { kind: 'Field', name: { kind: 'Name', value: 'images' } },
           { kind: 'Field', name: { kind: 'Name', value: 'listingAgentCompany' } },
           {
@@ -10957,6 +11005,23 @@ export const MemberPropertiesListSearchContainerPropertiesDocument = {
 } as unknown as DocumentNode<
   MemberPropertiesListSearchContainerPropertiesQuery,
   MemberPropertiesListSearchContainerPropertiesQueryVariables
+>;
+export const MemberPropertiesListSearchContainerMapSasTokenDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'MemberPropertiesListSearchContainerMapSasToken' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [{ kind: 'Field', name: { kind: 'Name', value: 'getMapSasToken' } }]
+      }
+    }
+  ]
+} as unknown as DocumentNode<
+  MemberPropertiesListSearchContainerMapSasTokenQuery,
+  MemberPropertiesListSearchContainerMapSasTokenQueryVariables
 >;
 export const MembersPropertiesListingContainerPropertyDocument = {
   kind: 'Document',

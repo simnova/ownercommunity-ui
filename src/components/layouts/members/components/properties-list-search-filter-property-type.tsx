@@ -40,14 +40,14 @@ export const PropertiesListSearchFilterPropertyType: FC<PropertiesListSearchFilt
 
     // handle when clear all filter clicked
     useEffect(() => {
-      if (!location.search) {
+      if (!location.search.includes(SearchParamKeys.PropertyType)) {
         setSelectedPropertyTypes([]);
       }
     }, [location]);
 
     return (
       <Collapse className="search-filter-collapse">
-        <Panel header={<h2 className="font-bold">Type </h2>} key="1">
+        <Panel header={<h2 className="font-bold">Type </h2>} key={FilterNames.Type}>
           <CheckboxGroup
             key={FilterNames.Type}
             options={PropertyTypes.map((value: string) => {

@@ -1,4 +1,5 @@
 import type { SliderMarks } from 'antd/lib/slider';
+import { FilterDetail } from './generated';
 
 export const LocalSettingsKeys = {
   SidebarCollapsed: 'sidebar-collapsed',
@@ -16,6 +17,7 @@ export const handleToggler = (isExpanded: boolean, callback: (isExpanded: boolea
 };
 
 export const SearchParamKeys = {
+  SearchString: 'search',
   ListedInfo: 'listedInfo',
   PropertyType: 'type',
   Amenities: 'amenities',
@@ -25,18 +27,29 @@ export const SearchParamKeys = {
   Bedrooms: 'bedrooms',
   Bathrooms: 'bathrooms',
   MinSquareFeet: 'minSquareFeet',
-  MaxSquareFeet: 'maxSquareFeet'
+  MaxSquareFeet: 'maxSquareFeet',
+  Latitude: 'lat',
+  Longtitude: 'long',
+  Page: 'page',
+  Top: 'top',
+  Distance: 'distance',
+  OrderBy: 'orderBy'
 };
 
 export const FilterNames = {
   Type: 'type',
   Bedrooms: 'bedrooms',
+  Bathrooms: 'bathrooms',
   Amenities: 'amenities',
+  AdditionalAmenities: 'additionalAmenities',
   AdditionalAmenitiesCategory: 'additionalAmenities/category',
   AdditionalAmenitiesAmenities: 'additionalAmenities/amenities',
+  SquareFeet: 'squareFeet',
   ListedForSale: 'listedForSale',
   ListedForRent: 'listedForRent',
-  ListedForLease: 'listedForLease'
+  ListedForLease: 'listedForLease',
+  ListedInfo: 'listedInfo',
+  Distance: 'distance'
 };
 
 export interface AdditionalAmenities {
@@ -45,19 +58,19 @@ export interface AdditionalAmenities {
 }
 
 export const BedroomsFilterOptions = [
-  { label: '1+', value: '1' },
-  { label: '2+', value: '2' },
-  { label: '3+', value: '3' },
-  { label: '4+', value: '4' },
-  { label: '5+', value: '5' }
+  { label: '1+', value: 1 },
+  { label: '2+', value: 2 },
+  { label: '3+', value: 3 },
+  { label: '4+', value: 4 },
+  { label: '5+', value: 5 }
 ];
 export const BathroomsFilterOptions = [
-  { label: '1+', value: '1' },
-  { label: '1.5+', value: '1.5' },
-  { label: '2+', value: '2' },
-  { label: '3+', value: '3' },
-  { label: '4+', value: '4' },
-  { label: '5+', value: '5' }
+  { label: '1+', value: 1 },
+  { label: '1.5+', value: 1.5 },
+  { label: '2+', value: 2 },
+  { label: '3+', value: 3 },
+  { label: '4+', value: 4 },
+  { label: '5+', value: 5 }
 ];
 export const PropertyTypes = ['condo', 'single family', 'townhouse'];
 export const Listed = [
@@ -75,6 +88,13 @@ export const AdditionalAmenitiesValues: AdditionalAmenities[] = [
     category: 'Location',
     amenities: ['Waterfront', 'Beachfront']
   }
+];
+export const DistanceOptions = [
+  { label: '1 Km', value: 1 },
+  { label: '5 Km', value: 5 },
+  { label: '10 Km', value: 10 },
+  { label: '20 Km', value: 20 },
+  { label: '50 Km', value: 50 }
 ];
 
 export const PriceMarkers: SliderMarks = {
@@ -121,3 +141,203 @@ export const MaxSquareFeetOptions = [
   { label: '1,900', value: 1900 },
   { label: '2,000', value: 2000 }
 ];
+
+export const additionalAmenitiesOptions: any = {
+  Features: ['Iron', 'Washer/Dryer (Private)'],
+  'Heating & Cooling': ['Central Air', 'Central Heat'],
+  'Kitchen & Dining': ['Dishwasher', 'Microwave', 'Refrigerator'],
+  Location: ['Oceanfront', 'Gated Community'],
+  Media: ['Cable', 'Internet', 'TV'],
+  'On-site Activities': ['Pool (Private)', 'Gym', 'Basketball Court'],
+  Outdoor: ['Balcony'],
+  'Parking & Access': ['Garage']
+  // '':[]
+};
+
+export const AdditionalAmenitiesCategories = Object.keys(additionalAmenitiesOptions);
+
+export const SelectableRoomsOptions = [
+  'Master Bedroom',
+  'Guest Room 1',
+  'Guest Room 2',
+  'Guest Room 3',
+  'Guest Room 4',
+  'Living Room'
+];
+
+export const AmentitiesOptions = [
+  'Cable',
+  'Pool (Private)',
+  'Pool (Public)',
+  'Gym',
+  'Washer/Dryer (Private)',
+  'Washer/Dryer (Public)'
+];
+
+export const BedTypeOptions = ['Single', 'Double', 'Triple', 'Quad', 'Queen', 'King', 'Sofa Bed'];
+
+export const addressQuery = async (addressInput: string, mapSASToken: string) => {
+  var addresssGeocodeServiceUrlTemplate: string =
+    'https://atlas.microsoft.com/search/address/json?typeahead=true&api-version=1&query={query}';
+  //var addresssGeocodeServiceUrlTemplate: string = 'https://atlas.microsoft.com/geocode?api-version=2022-02-01-preview&addressLine={query}&top=10';
+
+  var requestUrl = addresssGeocodeServiceUrlTemplate.replace(
+    '{query}',
+    encodeURIComponent(addressInput)
+  );
+  const token = mapSASToken;
+  console.log(token);
+
+  const address = async () => {
+    const request = await fetch(requestUrl, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        Authorization: 'jwt-sas ' + token,
+        'Content-Type': 'application/json; charset=utf-8'
+      }
+    });
+
+    const data = await request.json();
+    console.log(data);
+    return data.results;
+  };
+
+  return address();
+};
+
+export const GetFilterFromQueryString = (searchParams: URLSearchParams, selectedFilter: FilterDetail): FilterDetail => {
+  // get all search params
+  const qsproperTypes = searchParams.get('type')?.split(',');
+  const qsbedrooms = searchParams.get('bedrooms');
+  const qsbathrooms = searchParams.get('bathrooms');
+  const qsminPrice = searchParams.get('minPrice');
+  const qsmaxPrice = searchParams.get('maxPrice');
+  const qsminSquareFeet = searchParams.get('minSquareFeet');
+  const qsmaxSquareFeet = searchParams.get('maxSquareFeet');
+  const qsamenities = searchParams.get('amenities')?.split(',');
+  const qsadditionalAmenities = searchParams.get('additionalAmenities')?.split(';');
+  const qsdistance = searchParams.get('distance');
+  const qsListedInfo = searchParams.get('listedInfo')?.split(',');
+  const qslat = searchParams.get('lat');
+  const qslong = searchParams.get('long');
+
+  let filters = {} as FilterDetail;
+
+  // proper type
+  if (qsproperTypes) {
+    filters = {
+      ...selectedFilter,
+      propertyType: qsproperTypes
+    };
+  }
+
+  // bedrooms
+  if (qsbedrooms) {
+    filters = {
+      ...filters,
+      listingDetail: {
+        ...filters?.listingDetail,
+        bedrooms: parseInt(qsbedrooms)
+      }
+    };
+  }
+
+  // bathrooms
+  if (qsbathrooms) {
+    filters = {
+      ...filters,
+      listingDetail: {
+        ...filters?.listingDetail,
+        bathrooms: parseFloat(qsbathrooms)
+      }
+    };
+  }
+
+  // amenities
+  if (qsamenities) {
+    filters = {
+      ...filters,
+      listingDetail: {
+        ...filters?.listingDetail,
+        amenities: qsamenities
+      }
+    };
+  }
+
+  // price
+  if (qsminPrice && qsmaxPrice) {
+    filters = {
+      ...filters,
+      listingDetail: {
+        ...filters?.listingDetail,
+        prices: [parseInt(qsminPrice), parseInt(qsmaxPrice)]
+      }
+    };
+  }
+
+  // square feet
+  if (qsminSquareFeet && qsmaxSquareFeet) {
+    filters = {
+      ...filters,
+      listingDetail: {
+        ...filters?.listingDetail,
+        squareFeets: [parseInt(qsminSquareFeet), parseInt(qsmaxSquareFeet)]
+      }
+    };
+  }
+
+  // additional amenities
+  if (qsadditionalAmenities) {
+    let temp: AdditionalAmenities[] = [];
+
+    qsadditionalAmenities.forEach((amenity) => {
+      const [cate, amen] = amenity.split(':');
+      temp.push({
+        category: cate,
+        amenities: amen.split(',')
+      });
+    });
+    filters = {
+      ...filters,
+      listingDetail: {
+        ...filters?.listingDetail,
+        additionalAmenities: temp
+      }
+    };
+  }
+
+  // listed info
+  if (qsListedInfo) {
+    filters = {
+      ...filters,
+      listedInfo: qsListedInfo
+    };
+  }
+
+  // distance
+  if (qsdistance) {
+    filters = {
+      ...filters,
+      distance: parseInt(qsdistance)
+    };
+  } else {
+    filters = {
+      ...filters,
+      distance: 0
+    };
+  }
+
+  // lat and long
+  if (qslat && qslong) {
+    filters = {
+      ...filters,
+      position: {
+        latitude: parseFloat(qslat),
+        longitude: parseFloat(qslong)
+      }
+    };
+  }
+
+  return filters;
+};

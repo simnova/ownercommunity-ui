@@ -1,6 +1,7 @@
 import {
   AdditionalAmenities,
   AdditionalAmenitiesValues,
+  FilterNames,
   SearchParamKeys
 } from '../../../../constants';
 import { Checkbox, Collapse } from 'antd';
@@ -105,14 +106,17 @@ export const PropertiesListSearchFilterAdditionalAmenities: FC<PropertiesListSea
     }, []);
 
     useEffect(() => {
-      if (!location.search) {
+      if (!location.search.includes(SearchParamKeys.AdditionalAmenities)) {
         setSelectedAdditionalAmenities([]);
       }
     }, [location]);
 
     return (
       <Collapse className="search-filter-collapse">
-        <Panel header={<h2 className="font-bold">Additional Amenities</h2>} key="5">
+        <Panel
+          header={<h2 className="font-bold">Additional Amenities</h2>}
+          key={FilterNames.AdditionalAmenities}
+        >
           <div style={{ paddingLeft: '20px' }}>
             {AdditionalAmenitiesValues.map((aam: AdditionalAmenities) => {
               return (
