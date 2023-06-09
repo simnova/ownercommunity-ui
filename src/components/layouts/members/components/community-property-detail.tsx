@@ -5,17 +5,6 @@ import { useParams } from 'react-router-dom';
 import { Listing } from './listing';
 const { Title, Text } = Typography;
 
-interface MarketDataConfigDefinition {
-  listedFor: {
-    title: string;
-    listedFlag: boolean;
-    name: string;
-    location: string;
-    price: number[];
-    listingImages: string[];
-  }[];
-}
-
 export const CommunityPropertyDetail: React.FC<any> = (props) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -33,76 +22,12 @@ export const CommunityPropertyDetail: React.FC<any> = (props) => {
 
   const listingImages = props.data.property.listingDetail.images.map((image: any) => {
     return `https://ownercommunity.blob.core.windows.net/${params.communityId}/${image}`;
-  })
+  });
 
   const floorPlanImages = props.data.property.listingDetail.floorPlanImages.map((floorPlan: any) => {
     const url = `https://ownercommunity.blob.core.windows.net/${params.communityId}/${floorPlan}`;
     return <Image src={url} alt={'floor plan'} />;
   });
-
-  const marketDataConfig: MarketDataConfigDefinition = {
-    listedFor: [
-      {
-        title: 'Sale',
-        listedFlag: props.data.property.listedForSale,
-        name: 'sale',
-        location: props.data.property.location.address.freeformAddress,
-        price: [props.data.property.listingDetail.price],
-        listingImages: listingImages
-      },
-      {
-        title: 'Rent',
-        listedFlag: props.data.property.listedForRent,
-        name: 'rental',
-        location: props.data.property.location.address.freeformAddress,
-        price: [
-          props.data.property.listingDetail.rentLow,
-          props.data.property.listingDetail.rentHigh
-        ],
-        listingImages: listingImages
-      },
-      {
-        title: 'Lease',
-        listedFlag: props.data.property.listedForLease,
-        name: 'lease',
-        location: props.data.property.location.address.freeformAddress,
-        price: [props.data.property.listingDetail.lease],
-        listingImages: listingImages
-      }
-    ]
-  };
-
-  const buildMarketData = () => {
-    return marketDataConfig.listedFor.map((marketData, index) => {
-      if (marketData.listedFlag) {
-        return (
-          <div key={index}>
-            <Divider orientation="left" orientationMargin={'5px'}>
-              <Title level={5}>{marketData.title} Details</Title>
-            </Divider>
-            <Listing
-              propertyName={props.data.property.propertyName}
-              location={marketData.location}
-              description={props.data.property.listingDetail.description}
-              price={marketData.price}
-              isRent={marketData.name === 'rental'}
-              isLease={marketData.name === 'lease'}
-              isSale={marketData.name === 'sale'}
-              listingImages={marketData.listingImages}
-            />
-          </div>
-        );
-      }
-    });
-  };
-
-  const generateMarketData = () => {
-    return (
-      <Space direction="vertical" style={{ width: '100%' }}>
-        {buildMarketData()}
-      </Space>
-    );
-  };
 
   const generateBeds = (beds: any) => {
     return beds.map((bed: any) => {
@@ -158,13 +83,9 @@ export const CommunityPropertyDetail: React.FC<any> = (props) => {
 
   const generateAgentDetails = () => {
     return (
-      (<Space direction={props.space ?? 'vertical'}>
+      <Space direction={props.space ?? 'vertical'}>
         <Space>
-          {props.data.property.listingDetail.listingAgent ? (
-            props.data.property.listingDetail.listingAgent
-          ) : (
-            <></>
-          )}
+          {props.data.property.listingDetail.listingAgent ? props.data.property.listingDetail.listingAgent : <></>}
           {props.data.property.listingDetail.listingAgentCompany ? (
             <Button type="link" onClick={showModal}>
               <Text italic style={{ color: 'gray' }}>
@@ -197,12 +118,7 @@ export const CommunityPropertyDetail: React.FC<any> = (props) => {
           <></>
         )}
         {props.data.property.listingDetail.listingAgentCompany ? (
-          <Modal
-            open={isModalVisible}
-            onCancel={handleCancel}
-            title={'Company Details'}
-            footer={null}
-          >
+          <Modal open={isModalVisible} onCancel={handleCancel} title={'Company Details'} footer={null}>
             <Space direction="vertical">
               <Title level={3}>{props.data.property.listingDetail.listingAgentCompany}</Title>
               {props.data.property.listingDetail.listingAgentCompanyAddress ? (
@@ -236,7 +152,7 @@ export const CommunityPropertyDetail: React.FC<any> = (props) => {
         ) : (
           <></>
         )}
-      </Space>)
+      </Space>
     );
   };
 
@@ -261,43 +177,7 @@ export const CommunityPropertyDetail: React.FC<any> = (props) => {
 
   return (
     <Space direction="vertical">
-      <Space direction="vertical" size={0}>
-        <Title level={2} style={{ marginBottom: '0px' }}>
-          {props.data.property.propertyName}
-        </Title>
-        <Text italic style={{ color: 'gray' }}>
-          Owned By:{' '}
-          {props.data.property.owner?.memberName ? props.data.property.owner.memberName : ''}
-        </Text>
-      </Space>
-
-      <Space direction="horizontal" size={50}>
-        <Title level={3} style={{ marginTop: '0px' }}>
-          {props.data.property.location.address.streetNumber +
-            ' ' +
-            props.data.property.location.address.streetName}
-        </Title>
-        <Title level={4}>
-          {props.data.property.listingDetail.bedrooms
-            ? props.data.property.listingDetail.bedrooms
-            : '-'}{' '}
-          Bds
-        </Title>
-        <Title level={4}>
-          {props.data.property.listingDetail.bathrooms
-            ? props.data.property.listingDetail.bathrooms
-            : '-'}{' '}
-          Ba
-        </Title>
-        <Title level={4}>
-          {props.data.property.listingDetail.squareFeet
-            ? props.data.property.listingDetail.squareFeet
-            : '-'}{' '}
-          Sqft
-        </Title>
-      </Space>
-
-      {generateMarketData()}
+      <Listing property={props.data.property} />
 
       <Divider orientation="left" orientationMargin={'5px'}>
         <Title level={5}>Bedrooms</Title>
@@ -323,9 +203,7 @@ export const CommunityPropertyDetail: React.FC<any> = (props) => {
       <Divider orientation="left" orientationMargin={'5px'}>
         <Title level={5}>
           About{' '}
-          {props.data.property.location.address.streetNumber +
-            ' ' +
-            props.data.property.location.address.streetName}
+          {props.data.property.location.address.streetNumber + ' ' + props.data.property.location.address.streetName}
         </Title>
       </Divider>
       <Text italic>{props.data.property.listingDetail.description}</Text>
