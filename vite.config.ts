@@ -1,8 +1,12 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  build: {
+    outDir: "build",
+    manifest: true,
+  },
   plugins: [react()],
   define: {
     process: import("process/browser"),
@@ -13,6 +17,6 @@ export default defineConfig({
     asset: import("assert"),
   },
   server: {
-    port: 3000
-  }
-})
+    port: 3000,
+  },
+});

@@ -2,6 +2,7 @@
   "name": "ownercommunity-ui",
   "version": "0.1.17",
   "type": "module",
+<<<<<<< HEAD
   "private": true,
   "dependencies": {
     "@ant-design/compatible": "^5.1.2",
@@ -22,6 +23,35 @@
     "@types/react-dom": "^18.2.17",
     "antd": "^5.12.2",
     "antd-img-crop": "^4.18.0",
+=======
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "private": true,
+  "dependencies": {
+    "@ant-design/compatible": "^5.1.1",
+    "@ant-design/cssinjs": "^1.9.1",
+    "@ant-design/pro-layout": "^7.13.3",
+    "@apollo/client": "^3.5.8",
+    "@azure/msal-browser": "^2.22.1",
+    "@azure/storage-blob": "^12.14.0",
+    "@craco/craco": "^7.0.0-alpha.3",
+    "@craftjs/core": "^0.2.0-beta.5",
+    "@headlessui/react": "^1.7.14",
+    "@microsoft/applicationinsights-react-js": "^3.4.3",
+    "@microsoft/applicationinsights-web": "~2.8.14",
+    "@nosferatu500/react-sortable-tree": "^4.0.6",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/async-retry": "^1.3.0",
+    "@types/jest": "^27.4.0",
+    "@types/node": "^20.10.3",
+    "@types/react": "^17.0.38",
+    "@types/react-dom": "^17.0.11",
+    "antd": "^5.4.7",
+    "antd-img-crop": "^4.12.2",
+>>>>>>> origin/main
     "async-retry": "^1.3.3",
     "axios": "^1.6.2",
     "browser-image-compression": "^2.0.2",
@@ -47,15 +77,16 @@
     "webpack": "^5.89.0"
   },
   "scripts": {
-    "prebuild": "node generate-build-version",
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "prebuild": "node generate-build-version.cjs",
+    "start": "vite",
+    "build": "tsc && vite build --base=https://ownercommunity-ui.pages.dev/",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "prod:build": "npm run build && http-server -p 3000 build",
     "prod": "http-server -p 3000 build",
     "build:major": "node generate-build-version major && npm run build",
     "build:minor": "node generate-build-version minor && npm run build",
+    "tscheck": "tsc --noEmit --watch",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -108,9 +139,14 @@
     "postcss": "^8.4.32",
     "prop-types": "^15.8.1",
     "storybook": "^7.6.4",
+<<<<<<< HEAD
     "storybook-addon-customize-antd-theme": "^1.1.0",
     "tailwindcss": "^3.3.6",
     "vite": "^5.0.8",
+=======
+    "tailwindcss": "^3.0.18",
+    "vite": "^5.0.9",
+>>>>>>> origin/main
     "webpack": "^5.89.0"
   }
 }

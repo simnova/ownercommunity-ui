@@ -19,33 +19,28 @@ import { CachePurgeProvider } from './contexts/CachePurgeContext';
 import { ThemeContext, ThemeProvider } from './contexts/ThemeContext';
 
 function ConfigProviderWrapper() {
-  
-
-  const {
-    currentTokens
-  }=useContext(ThemeContext)
+  const { currentTokens } = useContext(ThemeContext);
   return (
-    <ConfigProvider theme={{
-      token: {
-        ...currentTokens.token,
-        colorBgBase: currentTokens.hardCodedTokens.backgroundColor,
-        colorTextBase: currentTokens.hardCodedTokens.textColor
-      }
-    }}>
-      
+    <ConfigProvider
+      theme={{
+        token: {
+          ...currentTokens.token,
+          colorBgBase: currentTokens.hardCodedTokens.backgroundColor,
+          colorTextBase: currentTokens.hardCodedTokens.textColor
+        }
+      }}
+    >
       {/* <StyleProvider hashPriority="high"> */}
-      
-        <MsalProvider config={msalProviderConfig}>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
-        </MsalProvider>
+
+      <MsalProvider config={msalProviderConfig}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </MsalProvider>
       {/* </StyleProvider> */}
     </ConfigProvider>
   );
 }
-
-
 
 ReactDOM.render(
   <React.StrictMode>

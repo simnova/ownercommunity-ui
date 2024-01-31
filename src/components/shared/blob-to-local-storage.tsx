@@ -29,7 +29,7 @@ export const BlobToLocalStorage: React.FC<BlobToLocalStorageProps> = (props) => 
       try {
         const api_call = await fetch(`https://ownercommunity.blob.core.windows.net/community-domains/${ window.location.hostname + (window.location.port && window.location.port !== '80' ? ':' + window.location.port: '') }`);
         const data = await api_call.json();
-        if(data && data.communityId ){
+        if (data?.communityId) {
           console.log('community-id:',data.communityId);
           return data.communityId;
         }
@@ -37,6 +37,8 @@ export const BlobToLocalStorage: React.FC<BlobToLocalStorageProps> = (props) => 
         console.log('app: cannot find community from URL:',error);
       }
     }
+
+    
 
     const loadLocalStorage = async (communityId:string|undefined) : Promise<void> => {
       if(typeof communityId === 'undefined' || communityId === ''){
