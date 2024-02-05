@@ -1,12 +1,26 @@
-import { render, fireEvent, waitFor } from '@testing-library/react';
+import { render, fireEvent, waitFor, queryByText } from '@testing-library/react';
 import { ServiceTicketsCreate } from './service-tickets-create';
-import { describe } from 'node:test';
+import { expect } from 'vitest';
 
 describe('ServiceTicketsCreate', () => {
   it('renders correctly', () => {
     const { getByLabelText } = render(<ServiceTicketsCreate data={{ members: [], properties: [] }} onSave={vi.fn()} />);
     expect(getByLabelText('Title')).toBeInTheDocument();
     expect(getByLabelText('Description')).toBeInTheDocument();
+    expect(getByLabelText('Property')).toBeInTheDocument();
+  });
+  it('renders Requestor field when isAdmin is true', () => {
+    const { getByLabelText } = render(
+      <ServiceTicketsCreate data={{ members: [], properties: [] }} onSave={vi.fn()} isAdmin={true} />
+    );
+    expect(getByLabelText('Requestor')).toBeInTheDocument();
+  });
+
+  it('does not render Requestor field when isAdmin is false', () => {
+    const { queryByText } = render(
+      <ServiceTicketsCreate data={{ members: [], properties: [] }} onSave={vi.fn()} isAdmin={false} />
+    );
+    expect(queryByText('Requestor')).toBeNull();
   });
   describe('User Interaction', () => {
     it('updates field values when the user types into them', () => {

@@ -1,68 +1,66 @@
-import { render, fireEvent, waitFor, getByPlaceholderText, getByText } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import { PropertiesDetail } from './properties-detail';
+import { render, fireEvent } from '@testing-library/react';
 
 describe('PropertiesDetail', () => {
   it('renders without crashing', () => {
     render(<PropertiesDetail data={{ property: {}, members: [] }} onSave={vi.fn()} onDelete={vi.fn()} />);
   });
-
-  it('displays property info', () => {
+  it('calls onSave when save button is clicked', async () => {
     const property = {
-      id: '1',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      id: '93993945',
+      createdAt: '02/02/2004',
+      updatedAt: '02/02/2004',
       propertyName: 'Test Property',
       propertyType: 'Test Type'
     };
+    const mockOnSave = vi.fn();
     const { getByText } = render(
-      <PropertiesDetail data={{ property, members: [] }} onSave={vi.fn()} onDelete={vi.fn()} />
+      <PropertiesDetail data={{ property, members: [] }} onSave={mockOnSave} onDelete={vi.fn()} />
     );
+    const saveButton = getByText('Save');
+    console.log('mockOnSave', mockOnSave);
+    fireEvent.submit(saveButton);
 
-    expect(getByText('Id')).toBeInTheDocument;
-    expect(getByText('Created At')).toBeInTheDocument;
-    expect(getByText('Updated At')).toBeInTheDocument;
+    await waitFor(() => {
+      expect(mockOnSave).toHaveBeenCalled;
+    });
   });
 
-  //   it('display property name and type when isAdmin is true', () => {
-  //     const property = {
-  //       id: '1',
-  //       createdAt: new Date().toISOString(),
-  //       updatedAt: new Date().toISOString(),
-  //       propertyName: 'Test Property',
-  //       propertyType: 'Test Type'
-  //     };
-  //     const { queryByText } = render(
-  //       <PropertiesDetail data={{ property, members: [] }} onSave={vi.fn()} onDelete={vi.fn()} isAdmin={true} />
-  //     );
+  describe('when viewing property information', () => {
+    it('displays information titles', async () => {
+      const property = {
+        id: '93993945',
+        createdAt: '02/02/2004',
+        updatedAt: '02/02/2004',
+        propertyName: 'Test Property',
+        propertyType: 'Test Type'
+      };
+      const { getByText } = render(
+        <PropertiesDetail data={{ property, members: [] }} onSave={vi.fn()} onDelete={vi.fn()} />
+      );
 
-  //     expect(queryByText('Property Name')).not.toBeInTheDocument();
-  //     expect(queryByText('Property Type')).not.toBeInTheDocument();
-  //   });
+      expect(getByText('Id')).toBeInTheDocument;
+      expect(getByText('Created At')).toBeInTheDocument;
+      expect(getByText('Updated At')).toBeInTheDocument;
+    });
+    it('displays correct property information', async () => {
+      const property = {
+        id: '93993945',
+        createdAt: '02/03/2004',
+        updatedAt: '02/02/2004',
+        propertyName: 'Test Property',
+        propertyType: 'Test Type'
+      };
+      const { getByText } = render(
+        <PropertiesDetail data={{ property, members: [] }} onSave={vi.fn()} onDelete={vi.fn()} />
+      );
 
-  //   it('calls onSave with updated property when form is submitted', async () => {
-  //     const property = {
-  //       id: '1',
-  //       createdAt: new Date().toISOString(),
-  //       updatedAt: new Date().toISOString(),
-  //       propertyName: 'Test Property',
-  //       propertyType: 'Test Type'
-  //     };
-  //     const onSave = vi.fn();
-  //     const { getByLabelText, getByRole } = render(
-  //       <PropertiesDetail data={{ property, members: [] }} onSave={onSave} onDelete={vi.fn()} />
-  //     );
-
-  //     fireEvent.change(getByPlaceholderText('Name'), { target: { value: 'Updated Property' } });
-  //     fireEvent.change(getByPlaceholderText('Type'), { target: { value: 'Updated Type' } });
-
-  //     fireEvent.click(getByRole('button', { name: /submit/i }));
-
-  //     await waitFor(() => {
-  //       expect(onSave).toHaveBeenCalledWith({
-  //         id: '1',
-  //         propertyName: 'Updated Property',
-  //         propertyType: 'Updated Type'
-  //       });
-  //     });
-  //   });
+      expect(getByText('Test Property')).toBeInTheDocument;
+      expect(getByText('Test Type')).toBeInTheDocument;
+      expect(getByText('93993945')).toBeInTheDocument;
+      expect(getByText('02/02/2004')).toBeInTheDocument;
+      expect(getByText('02/02/2004')).toBeInTheDocument;
+    });
+  });
 });
