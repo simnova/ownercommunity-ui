@@ -2,12 +2,12 @@ import { render, waitFor, fireEvent } from '@testing-library/react';
 import { PropertiesDetail } from './properties-detail';
 
 describe('PropertiesDetail', () => {
-  it('renders without crashing', () => {
+  it('then I expect it renders without crashing', () => {
     render(<PropertiesDetail data={{ property: {}, members: [] }} onSave={vi.fn()} onDelete={vi.fn()} />);
   });
 
   describe('when viewing property information', () => {
-    it('displays information titles', async () => {
+    it('then I expect it displays information titles', async () => {
       const property = {
         id: '87d32487922h38h9823h83hf',
         createdAt: '02/02/2004',
@@ -23,7 +23,7 @@ describe('PropertiesDetail', () => {
       expect(getByText('Created At')).toBeInTheDocument;
       expect(getByText('Updated At')).toBeInTheDocument;
     });
-    it('displays correct property information', async () => {
+    it('then I expect it displays correct property information', async () => {
       const property = {
         id: '87d32487922h38h9823h83hf',
         createdAt: '02/03/2004',
@@ -44,8 +44,8 @@ describe('PropertiesDetail', () => {
   });
 });
 
-describe('Button functionality', () => {
-  it('calls onSave when save button is clicked', async () => {
+describe('Given interaction with buttons', () => {
+  it('then I expect it calls onSave when save button is clicked', async () => {
     const property = {
       id: '87d32487922h38h9823h83hf',
       createdAt: '02/02/2004',
@@ -64,7 +64,7 @@ describe('Button functionality', () => {
       expect(mockOnSave).toHaveBeenCalled;
     });
   });
-  it('calls onDelete when Delete Button is clicked', async () => {
+  it('then I expect it calls onDelete when Delete Button is clicked', async () => {
     const property = {
       id: '87d32487922h38h9823h83hf',
       createdAt: '02/02/2004',
@@ -85,8 +85,8 @@ describe('Button functionality', () => {
   });
 });
 
-describe('Data validation', () => {
-  it('calls onSave with the correct property name when form is submitted with updated name', async () => {
+describe('Given form data', () => {
+  it('then I expect it calls onSave with the correct property name when form is submitted with updated name', async () => {
     const property = {
       id: '87d32487922h38h9823h83hf',
       createdAt: '02/02/2004',
@@ -120,7 +120,7 @@ describe('Data validation', () => {
     });
   });
 
-  it('shows an error message when property name is empty', async () => {
+  it('then I expect it shows an error message when property name is empty', async () => {
     const property = {
       id: '87d32487922h38h9823h83hf',
       createdAt: '02/02/2004',
@@ -137,7 +137,7 @@ describe('Data validation', () => {
     const saveButton = getByText('Save');
     fireEvent.submit(saveButton);
 
-    const errorMessage = await findByText(/Property Name is required/i) as HTMLElement;
+    const errorMessage = (await findByText(/Property Name is required/i)) as HTMLElement;
     expect(errorMessage).toBeInTheDocument();
   });
 });
