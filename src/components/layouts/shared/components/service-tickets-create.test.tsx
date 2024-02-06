@@ -140,31 +140,5 @@ describe('ServiceTicketsCreate', () => {
 
     expect(titleInput.value).toBe('Test Title');
     expect(descriptionInput.value).toBe('Test Description');
-    // expect(propertyInput.value).toBe('Test Property');
   });
-  //   it('resets form fields after successful submission', async () => {
-  //     const onSave = vi.fn().mockResolvedValue({});
-  //     const { getByLabelText, container } = render(
-  //       <ServiceTicketsCreate data={{ members: [], properties: [] }} onSave={onSave} />
-  //     );
-
-  //     const titleInput = getByLabelText('Title');
-  //     const descriptionInput = getByLabelText('Description');
-  //     const propertyInput = getByLabelText('Property');
-
-  //     fireEvent.change(titleInput, { target: { value: 'Test Title' } });
-  //     fireEvent.change(descriptionInput, { target: { value: 'Test Description' } });
-  //     fireEvent.change(propertyInput, { target: { value: 'Test Property' } });
-
-  //     const form = container.querySelector('form');
-  //     fireEvent.submit(form);
-
-  //     await waitFor(() => {
-  //       expect(onSave).toHaveBeenCalled;
-  //     });
-
-  //     // expect(titleInput.value).toBe('');
-  //     // expect(descriptionInput.value).toBe('');
-  //     expect(propertyInput.value).toBe('')
-  //   });
 });
