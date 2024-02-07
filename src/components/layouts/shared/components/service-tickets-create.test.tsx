@@ -74,7 +74,7 @@ describe('Given invalid inputs', () => {
     const form = container.querySelector('form');
     fireEvent.submit(form);
 
-    expect(await findByText('Description is required.')).toBeInTheDocument();
+    expect(await findByText(/Description is required./i)).toBeInTheDocument();
   });
 
   it('then I expect it shows validation error when property is not selected', async () => {
@@ -91,7 +91,7 @@ describe('Given invalid inputs', () => {
     const form = container.querySelector('form');
     fireEvent.submit(form);
 
-    expect(await findByText('Property is required.')).toBeInTheDocument();
+    expect(await findByText(/Property is required./i)).toBeInTheDocument();
   });
   it('then I expect it shows validation error when requestor is not selected', async () => {
     const { getByLabelText, findByText, container } = render(
@@ -109,7 +109,7 @@ describe('Given invalid inputs', () => {
     const form = container.querySelector('form');
     fireEvent.submit(form);
 
-    expect(await findByText('Requestor is required.')).toBeInTheDocument();
+    expect(await findByText(/Requestor is required./i)).toBeInTheDocument();
   });
 });
 describe('Given a form submission', () => {

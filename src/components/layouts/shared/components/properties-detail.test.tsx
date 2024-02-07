@@ -23,6 +23,7 @@ describe('PropertiesDetail', () => {
       expect(getByText('Created At')).toBeInTheDocument;
       expect(getByText('Updated At')).toBeInTheDocument;
     });
+
     it('then I expect it displays correct property information identifiers', async () => {
       const property = {
         id: '87d32487922h38h9823h83hf',
@@ -151,7 +152,6 @@ describe('Given form changes', () => {
     const saveButton = getByText('Save');
     fireEvent.submit(saveButton);
 
-    const errorMessage = (await findByText(/Property Name is required/i)) as HTMLElement;
-    expect(errorMessage).toBeInTheDocument();
+    expect(await findByText(/Property Name is required/i)).toBeInTheDocument();
   });
 });
