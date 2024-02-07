@@ -4,7 +4,7 @@ import { expect } from 'vitest';
 import { userEvent } from '@storybook/test';
 
 describe('ServiceTicketsCreate', () => {
-  it('renders without crashing', () => {
+  it('renders without crashing', async () => {
     const { getByLabelText } = render(<ServiceTicketsCreate data={{ members: [], properties: [] }} onSave={vi.fn()} />);
     expect(getByLabelText('Title')).toBeInTheDocument();
     expect(getByLabelText('Description')).toBeInTheDocument();
@@ -27,7 +27,7 @@ describe('ServiceTicketsCreate', () => {
   });
 });
 describe('Given User Interaction', () => {
-  it('then I expect field to update values when the user types into them', () => {
+  it('then I expect field to update values when the user types into them', async () => {
     const { getByLabelText } = render(<ServiceTicketsCreate data={{ members: [], properties: [] }} onSave={vi.fn()} />);
     const titleInput = getByLabelText('Title');
     const descriptionInput = getByLabelText('Description');
