@@ -2,16 +2,16 @@ import { render, waitFor, fireEvent } from '@testing-library/react';
 import { PropertiesDetail } from './properties-detail';
 
 describe('PropertiesDetail', () => {
-  it('then I expect it renders without crashing', () => {
+  it('renders without crashing', () => {
     render(<PropertiesDetail data={{ property: {}, members: [] }} onSave={vi.fn()} onDelete={vi.fn()} />);
   });
 
-  describe('when viewing property information', () => {
+  describe('Given a user viewing property information', () => {
     it('then I expect it displays information titles', async () => {
       const property = {
         id: '87d32487922h38h9823h83hf',
         createdAt: '02/02/2004',
-        updatedAt: '02/02/2004',
+        updatedAt: '02/04/2004',
         propertyName: 'Test Property',
         propertyType: 'Test Type'
       };
@@ -23,11 +23,11 @@ describe('PropertiesDetail', () => {
       expect(getByText('Created At')).toBeInTheDocument;
       expect(getByText('Updated At')).toBeInTheDocument;
     });
-    it('then I expect it displays correct property information', async () => {
+    it('then I expect it displays correct property information identifiers', async () => {
       const property = {
         id: '87d32487922h38h9823h83hf',
-        createdAt: '02/03/2004',
-        updatedAt: '02/02/2004',
+        createdAt: '02/02/2004',
+        updatedAt: '02/04/2004',
         propertyName: 'Test Property',
         propertyType: 'Test Type'
       };
@@ -38,13 +38,27 @@ describe('PropertiesDetail', () => {
       expect(getByText('Test Property')).toBeInTheDocument;
       expect(getByText('Test Type')).toBeInTheDocument;
       expect(getByText('87d32487922h38h9823h83hf')).toBeInTheDocument;
-      expect(getByText('02/02/2004')).toBeInTheDocument;
-      expect(getByText('02/02/2004')).toBeInTheDocument;
+    });
+
+    it('then I expect it displays correct created and updated dates', async () => {
+      const property = {
+        id: '87d32487922h38h9823h83hf',
+        createdAt: '02/02/2004',
+        updatedAt: '02/04/2004',
+        propertyName: 'Test Property',
+        propertyType: 'Test Type'
+      };
+      const { findByText } = render(
+        <PropertiesDetail data={{ property, members: [] }} onSave={vi.fn()} onDelete={vi.fn()} />
+      );
+
+      expect(findByText('02/02/2004')).toBeInTheDocument;
+      expect(findByText('02/04/2004')).toBeInTheDocument;
     });
   });
 });
 
-describe('Given interaction with buttons', () => {
+describe('Given interaction with form action buttons', () => {
   it('then I expect it calls onSave when save button is clicked', async () => {
     const property = {
       id: '87d32487922h38h9823h83hf',
@@ -85,7 +99,7 @@ describe('Given interaction with buttons', () => {
   });
 });
 
-describe('Given form data', () => {
+describe('Given form changes', () => {
   it('then I expect it calls onSave with the correct property name when form is submitted with updated name', async () => {
     const property = {
       id: '87d32487922h38h9823h83hf',
