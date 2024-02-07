@@ -1,6 +1,7 @@
-import { render, fireEvent, waitFor, getByText } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import { ServiceTicketsCreate } from './service-tickets-create';
 import { expect } from 'vitest';
+import { userEvent } from '@storybook/test';
 
 describe('ServiceTicketsCreate', () => {
   it('renders without crashing', () => {
@@ -39,6 +40,16 @@ describe('Given User Interaction', () => {
   });
 });
 describe('Given invalid inputs', () => {
+  it('then I expect that it shows an error message when the title is too long', async () => {
+    const { getByLabelText } = render(<ServiceTicketsCreate data={{ members: [], properties: [] }} onSave={vi.fn()} />);
+    const titleInput = getByLabelText('Title');
+
+    userEvent.type(titleInput, 'a'.repeat(321));
+    await waitFor(() => {
+      expect(titleInput.value).toBe('a'.repeat(200));
+    });
+  });
+
   it('then I expect it displays an error detected when title is left empty', async () => {
     const { getByLabelText, findByText, container } = render(
       <ServiceTicketsCreate data={{ members: [], properties: [] }} onSave={vi.fn()} />
