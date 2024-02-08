@@ -13,16 +13,14 @@ export const CachePurgeContext = createContext<CachePurgeContextType>({
 export const CachePurgeProvider = ({ children }: { children: ReactNode }) => {
   let cachedVersion = localStorage.getItem('cachedVersion');
   useEffect(() => {
-    // check if there is cachedVersion in localstorage
     cachedVersion = localStorage.getItem('cachedVersion');
     if (!cachedVersion) {
       localStorage.setItem('cachedVersion', appVersion);
     }
   }, []);
 
-  const fethcVersion = async () => {
+  const fetchVersion = async () => {
     const url = '/meta.json';
-    // it will make sure no cache is used
     const config = {
       params: {
         timestamp: Date.now()
@@ -56,7 +54,7 @@ export const CachePurgeProvider = ({ children }: { children: ReactNode }) => {
       return setInterval(func, interval);
     }
     (async()=>{
-      setIntervalImmediately(fethcVersion, 20000);
+      setIntervalImmediately(fetchVersion, 20000);
     })()
   }, []);
 

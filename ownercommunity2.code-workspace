@@ -1,0 +1,13 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "../data-access"
+    }
+  ],
+  "settings": {
+    "liveServer.settings.multiRootWorkspaceName": "ui"
+  }
+}
