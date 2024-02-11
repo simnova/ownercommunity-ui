@@ -52,7 +52,7 @@ describe('Given user interaction', () => {
       fireEvent.submit(getByText('Save'));
 
       await waitFor(() => {
-        expect(mockOnSave).toHaveBeenCalled;
+        expect(mockOnSave).toHaveBeenCalled();
       });
     });
     it('then I expect it calls onDelete when Delete Button is clicked', async () => {
@@ -76,7 +76,7 @@ describe('Given user interaction', () => {
       fireEvent.click(getByText(/delete property/i));
 
       await waitFor(() => {
-        expect(mockDeleteProperty).toHaveBeenCalled;
+        expect(mockDeleteProperty).toHaveBeenCalled();
       });
     });
 
