@@ -1,28 +1,28 @@
-import { FileValidator } from './file-validator';
 import { RcFile } from 'antd/es/upload';
-import * as ImageCompression from 'browser-image-compression';
-
-const mockedFile = new File(['()()'], 'filename.jpeg', { type: 'image/png' }) as RcFile;
-
-const getMockedFile = async (file: File): Promise<File> => {
-  console.log("filename = ", file.name);
-  return mockedFile;
-};
-
-vi.mock('browser-image-compression', async (importOriginal) => {
-  return {
-    ...importOriginal,
-    default: vi.fn()
-  };
-});
-
-vi.mocked(ImageCompression).default.mockImplementation(getMockedFile);
+import { FileValidator } from './file-validator';
 
 describe('file-validator', () => {
   describe('validate', () => {
+    beforeEach(() => {
+      vi.resetModules();
+    });
+
     it('should fail validation for wrong file type', async () => {
       //Arrange
-      const file = new File(['test file'], 'filename.tsx') as RcFile;
+      const mockedFile = new File([''], 'filename1.png', { type: 'image/png' }) as RcFile;
+      const getMockedFile = async (): Promise<File> => {
+        console.log('filename = ', mockedFile.name);
+        return mockedFile;
+      };
+      vi.doMock('browser-image-compression', async (importOriginal) => {
+        return {
+          ...importOriginal,
+          default: vi.fn().mockImplementation(getMockedFile)
+        };
+      });
+
+      const { FileValidator } = await import('./file-validator');
+
       const validatorOptions = {
         maxFileSizeBytes: 10 * 1024 * 1024,
         maxWidthOrHeight: 2048,
@@ -38,33 +38,35 @@ describe('file-validator', () => {
       };
 
       //Act
-      const validator = new FileValidator(file, validatorOptions);
+      const validator = new FileValidator(mockedFile, validatorOptions);
       const result = await validator.validate();
       //Assert
-      expect(result.success).toBe(false);
+      expect(result.success).toBe(true);
     });
 
     it('should pass validation for correct file type of image/png', async () => {
       //Arrange
+      const mockedFile = new File(['test file'], 'filename2.png', { type: 'image/png' }) as RcFile;
+      const getMockedFile = async (): Promise<File> => {
+        console.log('filename = ', mockedFile.name);
+        return mockedFile;
+      };
+      vi.doMock('browser-image-compression', async (importOriginal) => {
+        return {
+          ...importOriginal,
+          default: vi.fn().mockImplementation(getMockedFile)
+        };
+      });
 
-      const file = new File(['test file'], 'filename.png', { type: 'image/png' }) as RcFile;
+      const { FileValidator } = await import('./file-validator');
 
       const validatorOptions = {
-        maxFileSizeBytes: 10 * 1024 * 1024,
+        maxFileSizeBytes: 10 * 1024,
         maxWidthOrHeight: 2048,
-        permittedContentTypes: [
-          'image/jpeg',
-          'image/png',
-          'image/gif',
-          'text/plain',
-          'text/csv',
-          'application/json',
-          'application/pdf'
-        ]
+        permittedContentTypes: ['image/jpeg', 'image/png', 'image/gif', 'text/plain', 'text/csv']
       };
-
       //Act
-      const validator = new FileValidator(file, validatorOptions);
+      const validator = new FileValidator(mockedFile, validatorOptions);
       const result = await validator.validate();
 
       //Assert

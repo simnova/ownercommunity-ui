@@ -1,19 +1,18 @@
 import { useEditor } from '@craftjs/core';
 import { Button, notification } from 'antd';
-import copy from 'copy-to-clipboard';
-import { arePageLayoutsLoaded, usePageLayouts } from '../local-data';
+import { arePageLayoutsLoaded, usePageLayouts } from '../page-layout';
 
 export const Download = () => {
   const [pageLayouts] = usePageLayouts();
   const { query } = useEditor();
 
   if(!arePageLayoutsLoaded(pageLayouts)){
-    return null; //JSON.stringify(pageLayouts);
+    return null;
   }
 
   const download = () => {
     const json = query.serialize();
-    copy(JSON.stringify(json));
+    navigator.clipboard.writeText(JSON.stringify(json));
     notification.success({
       message: "Copied to Clipboard",
       description: "The JSON has been copied to your clipboard"
@@ -21,7 +20,7 @@ export const Download = () => {
   }
 
   const downloadAll = () => {
-    copy(JSON.stringify(pageLayouts));
+    navigator.clipboard.writeText(JSON.stringify(pageLayouts));
     notification.success({
       message: "Copied to Clipboard",
       description: "The JSON has been copied to your clipboard"
@@ -30,8 +29,8 @@ export const Download = () => {
 
   return (
     <div style={{display:'flex'}}>
-      <Button onClick={() => download()}>Get JSON</Button>
-      <Button onClick={() => downloadAll()}>Get Site JSON</Button>
+      <Button data-testid="get-json" onClick={() => download()}>Get Page JSON</Button>
+      <Button data-testid="get-site-json" onClick={() => downloadAll()}>Get Site JSON</Button>
     </div>
   )
 }
