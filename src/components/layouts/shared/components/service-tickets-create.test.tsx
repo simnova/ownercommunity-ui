@@ -1,7 +1,10 @@
 import { render, fireEvent, waitFor } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 import { ServiceTicketsCreate } from './service-tickets-create';
-import { expect } from 'vitest';
-import { userEvent } from '@storybook/test';
+// import userEvent from '@testing-library/user-event';
+// import Form from 'antd';
+// import { screen } from '@testing-library/react';
+// import { ServiceTicketCreateInput } from 'src/generated.tsx';
 
 describe('ServiceTicketsCreate', () => {
   it('renders without crashing', async () => {
@@ -83,5 +86,55 @@ describe('Given user inputs', () => {
       fireEvent.click(getByText(/create service ticket/i));
       expect(await findByText(/Requestor is required./i)).toBeInTheDocument();
     });
+    // describe('When inputs are valid', () => {
+    //   it('Then I expect onSave to be called with the correct information', async () => {
+
+    //     const mockRequestors = [
+    //       { label: 'Requestor 1', value: 'id1' },
+    //       { label: 'Requestor 2', value: 'id2' }
+
+    //     ];
+
+    //     const mockProperties = [
+    //       { label: 'Property 1', value: 'id1' },
+    //       { label: 'Property 2', value: 'id2' }
+
+    //     ];
+
+    //     const mockOnSave = vi.fn();
+    //     const { getByLabelText, getByText } = render(
+    //       <ServiceTicketsCreate
+    //         data={{ members: [mockRequestors], properties: [mockProperties] }}
+    //         onSave={mockOnSave}
+    //         isAdmin={true}
+    //       />
+    //     );
+    //     const requestorDropdown = await screen.findByRole('combobox', { name: /requestor/i });
+    //     const propertyDropdown = await screen.findByRole('combobox', { name: /property/i });
+    //     await waitFor(() => {
+    //       expect(requestorDropdown).toHaveValue('id1');
+    //       expect(propertyDropdown).toHaveValue('id1');
+    //     });
+    //     console.log(requestorDropdown);
+    //     console.log(propertyDropdown, 'identifiy me ');
+    //     console.log('testsetsetestsets');
+
+    //     fireEvent.change(getByLabelText('Title'), { target: { value: 'Test Title' } });
+    //     fireEvent.change(getByLabelText('Description'), { target: [{ value: 'Test Description' }] });
+    //     userEvent.selectOptions(requestorDropdown, ['id2']);
+    //     userEvent.selectOptions(propertyDropdown, ['id2']);
+
+    //     fireEvent.click(getByText(/create service ticket/i));
+
+    //     await waitFor(() => {
+    //       expect(mockOnSave).toHaveBeenCalledWith({
+    //         title: 'Test Title',
+    //         description: 'Test Description',
+    //         propertyId: 'Property 1',
+    //         requestorId: 'Requestor 1'
+    //       });
+    //     });
+    //   });
+    // });
   });
 });
