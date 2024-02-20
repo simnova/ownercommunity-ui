@@ -17,6 +17,7 @@ import { ServiceTickets } from './pages/service-tickets';
 import { Settings } from './pages/settings';
 import { SiteEditor } from './pages/site-editor';
 import { SectionLayout } from './section-layout';
+import { Scheduling } from './pages/scheduling';
 
 export interface PageLayoutProps {
   path: string;
@@ -72,6 +73,13 @@ export const Admin: React.FC<any> = (_props) => {
       icon: <ScheduleOutlined />,
       id: 7,
       parent: 'ROOT'
+    },
+    {
+      path: '/community/:communityId/admin/scheduling/*',
+      title: 'Scheduling',
+      icon: <ScheduleOutlined />,
+      id: 8,
+      parent: 'ROOT'
     }
   ];
 
@@ -86,6 +94,7 @@ export const Admin: React.FC<any> = (_props) => {
           <Route path="/members/*" element={<Members />} />
           <Route path="/properties/*" element={<Properties />} />
           <Route path="/service-tickets/*" element={<ServiceTickets />} />
+          <Route path="/scheduling/*" element={<Scheduling />} />
         </Route>
       </Routes>
     </BlobToLocalStorage>
