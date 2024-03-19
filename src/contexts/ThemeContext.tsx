@@ -3,16 +3,19 @@ import { ReactNode, createContext, useEffect, useState } from 'react';
 import { useMaintenanceMessage } from '../components/shared/maintenance-message';
 import ModalPopUp from './components/ModalPopUp';
 
+interface ThemeTokens {
+  textColor: string;
+  backgroundColor: string;
+}
+
 interface ThemeContextType {
   currentTokens: {
     token: typeof theme.defaultSeed;
-    hardCodedTokens: any;
+    hardCodedTokens: ThemeTokens;
     type: string;
   };
   setTheme: (tokens: any, types: string) => void;
 }
-
-
 
 export const ThemeContext = createContext<ThemeContextType>({
   currentTokens: {
@@ -28,7 +31,7 @@ export const ThemeContext = createContext<ThemeContextType>({
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const { isImpending, isMaintenance, maintainanceMessage, maintainanceMessageImpending } = useMaintenanceMessage();
-  const [currentTokens, setCurrentTokens] = useState({
+  const [currentTheme, setCurrentTheme] = useState<ThemeContextType['currentTokens']>({
     token: theme.defaultSeed,
     hardCodedTokens: {
       textColor: '#000000',
@@ -36,38 +39,22 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     },
     type: 'light'
   });
-  const [isHidden, setIsHidden] = useState(false);
-
-
-  const toggleHidden = () => setIsHidden((prevHidden) => !prevHidden);
-
-  // setTheme functions that take tokens as argument
-  const setTheme = (tokens: any, type: string) => {
-    let valueToSet: any;
-    if (type === 'light') {
-      valueToSet = {
+  const [isContentHidden, setIsContentHidden] = useState(false);
+  const toggleContentVisibility = () => setIsContentHidden((prevState) => !prevState);
+  const applyTheme = (tokens: any, type: string) => {
+    let newTheme: any;
+    if (type === 'light' || type === 'dark') {
+      newTheme = {
         token: tokens,
         hardCodedTokens: {
-          textColor: '#000000',
-          backgroundColor: '#ffffff'
+          textColor: type === 'light' ? '#000000' : '#ffffff',
+          backgroundColor: type === 'light' ? '#ffffff' : '#000000'
         },
-        type: 'light'
-      };
-    } else if (type === 'dark') {
-      valueToSet = {
-        token: tokens,
-        hardCodedTokens: {
-          textColor: '#ffffff',
-          backgroundColor: '#000000'
-        },
-        type: 'dark'
+        type: type
       };
     } else if (type === 'custom') {
-      console.log('I am in custom thing');
-      valueToSet = {
-        token: {
-          ...currentTokens.token
-        },
+      newTheme = {
+        token: { ...currentTheme.token },
         hardCodedTokens: {
           textColor: tokens?.colorTextBase,
           backgroundColor: tokens?.colorBgBase
@@ -75,118 +62,67 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
         type: 'custom'
       };
     }
-    setCurrentTokens(valueToSet);
+    setCurrentTheme(newTheme);
+    localStorage.setItem('themeProp', JSON.stringify(newTheme));
+  };
 
-    localStorage.setItem('themeProp', JSON.stringify(valueToSet));
+  const loadThemeFromLocalStorage = () => {
+    const storedTheme = JSON.parse(localStorage.getItem('themeProp')!);
+    if (storedTheme) {
+      applyTheme(storedTheme.hardCodedTokens, storedTheme.type);
+    } else {
+      applyTheme(theme.defaultSeed, 'light');
+    }
+  };
+
+  const handleKeyboardShortcut = (event: KeyboardEvent) => {
+    if (event.metaKey && event.shiftKey && event.key === 'k') {
+      toggleContentVisibility();
+    }
   };
 
   useEffect(() => {
-    const extractFromLocal = JSON.parse(localStorage.getItem('themeProp')!);
-    console.log('Printing extractFromLocal');
-    console.log(extractFromLocal);
-    if (extractFromLocal && extractFromLocal.type === 'dark') {
-      setTheme(
-        {
-          colorTextBase: '#ffffff',
-          colorBgBase: '#000000'
-        },
-        'dark'
-      );
-      return;
-    } else if (extractFromLocal && extractFromLocal.type === 'light') {
-      setTheme(
-        {
-          colorTextBase: '#000000',
-          colorBgBase: '#ffffff'
-        },
-        'light'
-      );
-      return;
-    } else if (extractFromLocal && extractFromLocal.type === 'custom') {
-      console.log('I am inside useeffect');
-      console.log(extractFromLocal);
-      setTheme(
-        {
-          colorTextBase: extractFromLocal.hardCodedTokens.textColor,
-          colorBgBase: extractFromLocal.hardCodedTokens.backgroundColor
-        },
-        'custom'
-      );
-      return;
-    } else {
-      const valueToSet = {
-        type: 'light',
-        tokens: theme.defaultSeed,
-        hardCodedTokens: {
-          textColor: '#000000',
-          backgroundColor: '#ffffff'
-        }
-      };
-      localStorage.setItem('themeProp', JSON.stringify(valueToSet));
-      setTheme(theme.defaultSeed, 'light');
-      return;
-    }
+    loadThemeFromLocalStorage();
   }, []);
-
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.metaKey && event.shiftKey && event.key === 'k') {
-        toggleHidden();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
+    window.addEventListener('keydown', handleKeyboardShortcut);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keydown', handleKeyboardShortcut);
     };
   }, []);
 
-  
+  const toggleDarkLightTheme = () => {
+    if (currentTheme.type === 'custom' || currentTheme.type === 'light') {
+      applyTheme(theme.darkAlgorithm(theme.defaultSeed), 'dark');
+    } else if (currentTheme.type === 'dark') {
+      applyTheme(theme.defaultSeed, 'light');
+    }
+  };
+
   return (
-    <ThemeContext.Provider value={{ currentTokens, setTheme }}>
+    <ThemeContext.Provider value={{ currentTokens: currentTheme, setTheme: applyTheme }}>
+      <div data-testid="theme-type">{currentTheme.type}</div>
       {isMaintenance ? (
-        <div>
-          <div className="h-screen flex justify-center items-center text-center px-8">
-            <div
-              dangerouslySetInnerHTML={{
-                __html: maintainanceMessage as string
-              }}
-            ></div>
-          </div>
+        <div className="h-screen flex justify-center items-center text-center px-8">
+          <div dangerouslySetInnerHTML={{ __html: maintainanceMessage as string }}></div>
         </div>
       ) : (
         <div>
-          <div className={isHidden ? 'hidden' : 'text-center'}>
+          <div className={isContentHidden ? 'hidden' : 'text-center'}>
             {isImpending && (
               <div className="w-screen bg-red-500 text-left px-8 py-4">
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: maintainanceMessageImpending as string
-                  }}
-                ></div>
+                <div dangerouslySetInnerHTML={{ __html: maintainanceMessageImpending as string }}></div>
               </div>
             )}
             <div className="py-2 flex gap-4 justify-center">
-              <Button
-                type="primary"
-                onClick={() => {
-                  if (currentTokens.type === 'custom' || currentTokens.type === 'light') {
-                    setTheme(theme.darkAlgorithm(theme.defaultSeed), 'dark');
-                  } else if (currentTokens.type === 'dark') {
-                    setTheme(theme.defaultSeed, 'light');
-                  }
-                }}
-              >
+              <Button type="primary"  onClick={toggleDarkLightTheme} data-testid='dark-and-light-switcher'>
                 Toggle Dark/Light
               </Button>
-
               <ModalPopUp />
             </div>
             <p>
               Hit <strong>Cmd+Shift+K</strong> to hide
             </p>
-            
           </div>
           {children}
         </div>
